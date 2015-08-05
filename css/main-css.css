@@ -22,8 +22,9 @@ body{
 
 #recent-activity{
 	clear:both;
-	margin: 8px auto;
+	margin: 1% auto;
 	width:80%;
+	height:1.5%;
 }
 
 #secondary-card-wrapper{
@@ -45,3 +46,28 @@ body{
 .showing{
 	visibility: visible;
 }
+
+.fix-one { width:8.33% !important; }
+.fix-two { width:16.66% !important; }
+.fix-three { width:25% !important; }
+.fix-four { width:33.33% !important; }
+.fix-five { width:41.66% !important; }
+.fix-six { width:50% !important; }
+.fix-seven { width:58.33% !important; }
+.fix-eight { width:66.66% !important; }
+.fix-nine { width:75% !important; }
+.fix-ten { width:83.33% !important; }
+.fix-eleven { width:91.66% !important; }
+
+.max-one { max-width:8.33%; }
+.max-two { max-width:16.66%; }
+.max-three { max-width:25%; }
+.max-four { max-width:33.33%; }
+.max-five { max-width:41.66%; }
+.max-six { max-width:50%; }
+.max-seven { max-width:58.33%; }
+.max-eight { max-width:66.66%; }
+.max-nine { max-width:75%; }
+.max-ten { max-width:83.33%; }
+.max-eleven { max-width:91.66%; }
+.max-twelve { max-width:100%; }
