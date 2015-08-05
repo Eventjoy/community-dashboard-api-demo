@@ -1,0 +1,133 @@
+<!-- Importing polymer -->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<dom-module id="event-footer">
+
+	<!-- Styles specific to this footer -->
+	<style>
+		#footer{
+			color: #F44336;
+			width: 100%;
+			background-color: #673AB7;
+			position: absolute;
+			bottom:0;
+			left:0;
+			margin:0px;
+		}
+		.vertical-bar{
+			background-color: #FFF;
+			border-right:thin solid #FFF;
+			height: 100%;
+		}
+		.white{ color: #FFF; }
+
+		.float-left{
+			float:left;
+			display: inline-block;
+			padding-left:16px;
+			padding-top:16px;
+			padding-bottom:16px;
+		}
+		.right-aligned{ text-align: right; width: 200px; }
+
+		.float-right{
+			padding-right: 16px;
+			padding-top:16px;
+			padding-bottom:16px;
+			float:right;
+		}
+		.caps{ text-transform: uppercase; }
+
+		.big {
+    		--iron-icon-height: 32px;
+    		--iron-icon-width: 32px;
+  		}
+  		paper-ripple{
+  			color: rgba(255,255,255,.87);
+  		}
+
+	</style>
+	<!-- Template Setup -->
+	<template>
+		<div id="footer">
+			<div class="float-left">
+				<span class="white">{{eventname}}</span></br>
+				<span class="white">{{eventdate}}</span>
+			</div>
+			<div class="float-right" onClick="">
+				<paper-ripple id="ripple" style="pointer-events: none;"></paper-ripple>
+				<iron-icon class="ripple big white" icon="settings"></iron-icon>
+
+			</div>
+			<div class="vertical-bar"></div>
+			<div class="float-right">
+				<span class="right-aligned white caps">Revenue</span></br>
+				<span class="right-aligned white ">{{currencysymbol}}</span>
+				<span class="right-aligned white ">{{revenue}}</span>
+			</div>
+			<div class="float-right">
+				<span class="right-aligned white caps">Attendees</span></br>
+				<span class="right-aligned white">{{attendees}}</span>
+			</div>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: "event-footer",
+
+			factoryImpl: function(eventname, eventdate, attendees, revenue, currencysymbol){
+				this.eventname = eventname;
+				this.eventdate = eventdate;
+				this.attendees = attendees;
+				this.revenue = revenue;
+			},
+
+			properties: {
+				eventname: {
+					type: String,
+					value: "Karl's Massive Hackathonapalooza",
+					observer: '_eventNameChanged'
+				},
+				eventdate: {
+					type: String,
+					value: "August 16, 2015",
+					observer: '_eventDateChanged'
+				},
+				attendees:{
+					type: Number,
+					value: 4000,
+					observer: '_attendeeCountChanged'
+				},
+				revenue:{
+					type: Number,
+					value: 634.50,
+					observer: '_revenueTotalChanged'
+				},
+				currencysymbol:{
+					type: String,
+					value: "$",
+					observer: '_currencySymbolChanged'
+				}
+			},
+
+			_eventNameChanged: function(newEventName){
+				this.eventname = newEventName;
+			},
+			_eventDateChanged: function(newEventDate){
+				this.eventdate = newEventDate;
+			},
+			_attendeeCountChanged: function(attendeeCountForOrder, oldCount){
+				this.attendees = oldCount + attendeeCountForOrder;
+			},
+			_revenueTotalChanged: function(revenueForOrder, oldTotal){
+				this.revenue = oldTotal + revenueForOrder;
+			},
+			_currencySymbolChanged: function(newCurrencySymbol){
+				this.currencysymbol = newCurrencySymbol;
+			}
+		});
+	</script>
+</dom-module>

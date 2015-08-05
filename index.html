@@ -2,10 +2,27 @@
 <html>
   <head>
   	<title>Community Dashboard</title>
+  	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700' rel='stylesheet' type='text/css'>
   	<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="eventjoy-dom-elements/demo-element.html">
+  	<!-- Paper Element-->
+  	<link rel="import" href="bower_components/paper-material/paper-material.html"></script>
+  	<link rel="import" href="bower_components/polymer/polymer.html">
+  	<script src="lib/eventjoy.js"></script>
+  	<!-- Stylesheet main-->
+  	<link rel="stylesheet" type="text/css" href="css/main-css.css">
+
+  	<!-- Eventjoy Defined Polymer Dom Elements -->
+    <link rel="import" href="eventjoy-dom-elements/main-card.html">
+    <link rel="import" href="eventjoy-dom-elements/event-footer.html">
   </head>
   <body>
-  	<demo-element></demo-element>
+	<!-- This is where we want to define values dynamically -->
+  	<paper-material elevation="2">
+  		<main-card></main-card>
+	</paper-material>
+
+	
+	<!-- Footer element -->
+  	<event-footer revenue='35,0000'  attendees='3,500'/>
   </body>
 </html>

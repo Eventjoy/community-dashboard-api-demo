@@ -1,3 +1,5 @@
 [submodule "lib"]
 	path = lib
 	url = git@github.com:Eventjoy/eventjoy.js.git
+	fetchrecursesubmodules = true
+	update = checkout

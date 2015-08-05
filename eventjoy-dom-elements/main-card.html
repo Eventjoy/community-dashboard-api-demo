@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+      
+<dom-module id="main-card">
+
+<style>
+
+  .left-column{
+    width:30%;
+  }
+  .header-image{
+      width: 70%;
+      height: 100%;
+      margin:0px;
+      padding:0px;
+  }
+
+  .float-left{
+    float:left;
+    background: #FFFFFF;
+  }
+  .float-right{
+    float:right;
+  }
+
+  img{
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<template>
+    <div class="header-image float-right"><img src={{headerimage}}></img></div>
+    <!--TODO: set this up to handle all the card style -->
+    <div class="left-column float-right"></div>
+</template>
+
+<script>
+    // element registration
+    Polymer({
+      is: "main-card",
+
+      // add properties and methods on the element's prototype
+      properties: {
+        // declare properties for the element's public API
+        headerimage:{
+          type: String,
+          value: "http://img1.imagehousing.com/1/f399bd0d98e048946053582608691a16.jpg"
+        },
+        orderdata:{
+          
+        }
+      }
+    });
+  </script>
+
+</dom-module>

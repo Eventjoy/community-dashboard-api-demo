@@ -24,6 +24,12 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0"
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-material": "PolymerElements/paper-material#~1.0.1",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.2",
+    "paper-menu-button": "PolymerElements/paper-menu-button#~1.0.1",
+    "paper-menu": "PolymerElements/paper-menu#~1.0.1",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.3",
+    "paper-ripple": "PolymerElements/paper-ripple#~1.0.1"
   }
 }

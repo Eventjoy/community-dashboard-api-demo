@@ -1,0 +1,38 @@
+html{
+	height: 100%;
+	margin:0px auto;
+} 
+
+body{
+	height: 100%;
+	margin:0px auto;
+	background: #FFFFFF;
+	position: relative;
+	font-family: 'Roboto', sans-serif;
+}
+
+paper-material{
+    height:50%;
+    width: 50%;
+    padding: 0px;
+    margin: 0px auto;
+    background: #FFF;
+    left:25%;
+    top:5%;
+    float: left;
+    clear:both;
+  }
+
+/* Font Style */
+.black-primary{
+	color: rgba(0,0,0,.87);
+}
+.black-secondary{
+	color: rgba(0,0,0,.54);
+}
+.white-primary{
+	color: rgba(1, 1, 1,.87);
+}
+.white-secondary{
+	color: rgba(1, 1, 1,.54);
+}
