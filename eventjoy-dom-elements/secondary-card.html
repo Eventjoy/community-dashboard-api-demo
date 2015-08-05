@@ -1,0 +1,154 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html"></script>
+<dom-module id="secondary-card">
+
+<style>
+
+  paper-material{
+    height: 100%;
+    width: 100%;
+    float:left;
+    clear:right;
+    background-color: #FFFFFF;
+    min-width: 250px;
+    -webkit-border-bottom-left-radius: 2px;
+    -webkit-border-bottom-right-radius: 2px;
+    -moz-border-radius-bottomleft: 2px;
+    -moz-border-radius-bottomright: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+
+  .white{color:#FFFFFF;}
+
+  .small-card{
+    height:100%;
+    position:relative;
+  }
+
+  .fixed-bottom{
+    position: absolute;
+    left:0;
+    bottom:0;
+    width: 100%;
+  }
+
+  .upper-case{
+    text-transform: uppercase;
+  }
+
+  .float-left{float:left; }
+  .float-right{float:right;}
+  #card-header{
+    background-color: #FF4081;
+    -webkit-border-top-left-radius: 2px;
+    -webkit-border-top-right-radius: 2px;
+    -moz-border-radius-topleft: 2px;
+    -moz-border-radius-topright: 2px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    height:27%;
+  }
+  #card-content{
+    height:65%;
+    padding:16px;
+  }
+  .center{
+    text-align: center;
+    display: table-cell; 
+    padding:16px;
+  }
+
+  .transparent-padding{
+    height: 100%;
+    width:24%;
+    padding:0.25%;
+    display: inline-block;
+  }
+
+  .metric-title{
+    font-size: 10px; 
+    font-weight: 500;
+    color: rgba(255,255,255,.87);
+  }
+
+  .metric-description{
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255,255,255,.87);
+  }
+
+</style>
+
+<template>
+  <div class="transparent-padding">
+    <paper-material elevation="2">
+      <div class="small-card">
+          <div id="card-header">
+            <div class="float-left center">
+              <span class="metric-title">ATTENDEES</span></br>
+              <span class="white-primary">{{registrationcount}}</span>
+            </div>
+            <div class="float-right white center">
+              <span class="metric-title">REVENUE</span></br>
+              <span class="white-primary">{{ordertotal}}</span>
+            </div>
+          </div>
+          <div id="card-content">
+            <div><p>{{attendeenames}}</p></div>
+            <div class="fixed-bottom">
+              <div class="float-left center">
+                <span class="black-primary">DISCOUNT CODE</span></br>
+                <span class="black-secondary">{{discountcode}}</span>
+              </div>
+              <div class="float-right center">
+                <span class="black-primary">PROMOTER</span></br>
+                <span class="black-secondary">{{promoter}}</span>
+              </div>
+            </div>
+          </div>
+      </div>
+    </paper-material>
+  </div>
+</template>
+
+<script>
+    // element registration
+    Polymer({
+      is: "secondary-card",
+
+      factoryImpl: function(registrationcount, ordertotal, attendeenames, discountcode, promoter){
+            this.registrationcount = registrationcountl
+            this.ordertotal = ordertotal;
+            this.attendeenames = attendeenames;
+            this.discountcode = discountcode;
+            this.promoter = promoter;
+        },
+
+      // add properties and methods on the element's prototype
+      properties: {
+        registrationcount:{
+          type: String,
+          value: "4"
+        },
+        ordertotal:{
+          type: String,
+          value: "3,000"
+        },
+        attendeenames:{
+          type: String,
+          value: "John Smith, Jared Jones, Mike Chefly"
+        },
+        discountcode:{
+          type: String,
+          value: "NONE"
+        },
+        promoter:{
+          type: String,
+          value: "NONE"
+        }
+      }
+    });
+  </script>
+
+</dom-module>

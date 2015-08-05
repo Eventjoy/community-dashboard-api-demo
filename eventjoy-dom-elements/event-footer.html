@@ -30,8 +30,8 @@
 			padding-top:16px;
 			padding-bottom:16px;
 		}
-		.right-aligned{ text-align: right; width: 200px; }
-
+		.right-aligned{ float:right; clear:right; }
+		.right-aligned-noclear{float:right;}
 		.float-right{
 			padding-right: 16px;
 			padding-top:16px;
@@ -56,16 +56,14 @@
 				<span class="white">{{eventname}}</span></br>
 				<span class="white">{{eventdate}}</span>
 			</div>
-			<div class="float-right" onClick="">
+			<div class="float-right" onClick="showSettings()">
 				<paper-ripple id="ripple" style="pointer-events: none;"></paper-ripple>
 				<iron-icon class="ripple big white" icon="settings"></iron-icon>
-
 			</div>
 			<div class="vertical-bar"></div>
 			<div class="float-right">
 				<span class="right-aligned white caps">Revenue</span></br>
-				<span class="right-aligned white ">{{currencysymbol}}</span>
-				<span class="right-aligned white ">{{revenue}}</span>
+				<span class="right-aligned white "><span>{{currencysymbol}}</span>{{revenue}}</span>
 			</div>
 			<div class="float-right">
 				<span class="right-aligned white caps">Attendees</span></br>
@@ -83,6 +81,7 @@
 				this.eventdate = eventdate;
 				this.attendees = attendees;
 				this.revenue = revenue;
+				this.currencysymbol = currencysymbol;
 			},
 
 			properties: {

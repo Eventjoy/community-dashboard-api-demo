@@ -11,28 +11,37 @@ body{
 	font-family: 'Roboto', sans-serif;
 }
 
-paper-material{
-    height:50%;
-    width: 50%;
-    padding: 0px;
-    margin: 0px auto;
-    background: #FFF;
-    left:25%;
-    top:5%;
-    float: left;
-    clear:both;
-  }
+#main-content{
+	width:100%;
+	height:100%;
+}
 
-/* Font Style */
-.black-primary{
-	color: rgba(0,0,0,.87);
+#main-card-wrapper{
+	height:55%;
 }
-.black-secondary{
-	color: rgba(0,0,0,.54);
+
+#recent-activity{
+	clear:both;
+	margin: 8px auto;
+	width:80%;
 }
-.white-primary{
-	color: rgba(1, 1, 1,.87);
+
+#secondary-card-wrapper{
+	width:80%;
+  	height: 25%;
+  	clear:left;
+  	margin: 0 auto;
+  	padding: 0 0 1.5% 0;
 }
-.white-secondary{
-	color: rgba(1, 1, 1,.54);
+
+#footer-wrapper{
+	width: 100%;
+}
+
+.hidden{
+	visibility: hidden;
+}
+
+.showing{
+	visibility: visible;
 }
