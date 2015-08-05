@@ -7,30 +7,47 @@
 
  paper-material{
     height:100%;
-    width: 50%;
-    padding: 0px;
-    margin: 0px auto;
+    width: 60%;
+    padding: 0;
+    margin: 1.5% auto;
     background: #FFF;
-    left:25%;
-    right:25%;
-    top:5%;
+    left:20%;
+    right:20%;
     float: left;
     clear:both;
-    min-width:722px;
+    /*min-width:722px;*/
   }
 
   #main-card{
     height:100%;
+    overflow:hidden;
   }
 
   .left-column{
+    position:relative;
     float:left;
-     width:35%;
-     background-color:#FFFFFF;
+    width:35%;
+    background-color:#FFFFFF;
+    max-height:100%;
+    overflow:hidden;
+  }
+  .left-column .inner-fade{
+    position:absolute;
+    left:0;top:0;right:0;bottom:0;
+    -webkit-box-shadow: inset 0px -10px 10px 0px #fff;
+    -moz-box-shadow: inset 0px -10px 10px 0px #fff;
+    box-shadow: inset 0px -10px 10px 0px #fff;
   }
   .header-image{
-      width: 65%;
-      height: 100%;
+    position:relative;
+    width: 65%;
+    height: 100%;
+    overflow:hidden;
+  }
+  .header-image>img{
+    position:absolute;
+    top:0;right:0;
+    height:100%;
   }
 
   .float-left{
@@ -41,28 +58,24 @@
     float:right;
   }
 
-  img{
-    width: 100%;
-    height: 100%;
-  }
-
   .center{
     text-align: center;
-    display: table-cell; 
-    padding:8px;
+    display: table-cell;
   }
   #card-header{
-    padding:16px;
-    height:20%;
+    padding:8% 4%;
+    position:relative;
   }
+  #card-header>div { white-space:nowrap; }
   #secondary-info{
     clear:both;
-    padding:16px;
-    height: 10%;
+    padding:8% 4%;
+    position:relative;
   }
+  #secondary-info>div { white-space:nowrap; }
   #registration-wrapper{
-    height: 70%;
-    padding:16px;
+    padding:8% 4%;
+    position:relative;
   }
   .main-card-title{
     font-size: 14px; 
@@ -73,7 +86,7 @@
   .metric{
     color: #FF4081;
     font-weight: 500;
-    font-size:42px;
+    font-size:36px;
   }
 
   .metric-description{
@@ -87,26 +100,26 @@
 <template>
   <paper-material elevation="2">
       <div id="main-card">
-        <div class="header-image float-right"><img src={{headerimage}}></img></div>
+        <div class="header-image float-right"><img src="{{headerimage}}"></img></div>
         <!--TODO: set this up to handle all the card style -->
         <div class="left-column float-left">
                 <div id="card-header">
-                    <div class="float-left center">
+                    <div class="float-left center fix-six max-six">
                       <span class="main-card-title">ATTENDEES</span></br>
                       <span class="metric">{{registrationcount}}</span>
                     </div>
                     
-                    <div class="float-right center">
+                    <div class="float-right center fix-six max-six">
                       <span class="main-card-title">REVENUE</span></br>
                       <span class="metric">{{ordertotal}}</span>
                     </div>
                 </div>
                 <div id="secondary-info">
-                    <div class="float-left center">
+                    <div class="float-left center fix-six max-six">
                       <span class="main-card-title">DISCOUNT CODE</span></br>
                       <span class="metric-description">{{discountcode}}</span>
                     </div>
-                    <div class="float-right center">
+                    <div class="float-right center fix-six max-six">
                       <span class="main-card-title">PROMOTER</span></br>
                       <span class="metric-description">{{promoter}}</span>
                     </div>
@@ -117,6 +130,7 @@
                   <card-list-item></card-list-item>
                   <card-list-item></card-list-item>
                 </div>
+                <div class="inner-fade"></div>
         </div>
       </div>
   </paper-material>
@@ -132,7 +146,7 @@
         // declare properties for the element's public API
         headerimage:{
           type: String,
-          value: "http://img1.imagehousing.com/1/f399bd0d98e048946053582608691a16.jpg"
+          value: "http://thewowstyle.com/wp-content/uploads/2015/02/1.Landscape-Photography.jpg"
         },
         registrationcount:{
           type: String,
