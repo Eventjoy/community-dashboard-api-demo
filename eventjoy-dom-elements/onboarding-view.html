@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- Reusable polymer objects -->
+<link rel="import" href="../bower_components/paper-material/paper-material.html"></script>
+<link rel="import" href="../bower_components/paper-button/paper-button.html"></script>
+<dom-module id="onboarding-view">
+
+<style>
+  #onboarding{
+    background-color: #673AB7;
+    height:100%;
+    width:100%;
+    position: absolute;
+    top:0;
+    left:0;
+}
+
+paper-material{
+  margin:0 auto;
+  width:30%;
+  height:300px;
+  margin-top: 15%;
+  background:#FFFFFF;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  min-width:30%;
+}
+
+
+#my-button {
+    background: #FF4081;
+    color: #FFFFFF;
+    position: absolute;
+    bottom:0;
+}
+
+.buttons{
+  width: 50%;
+}
+
+.center{
+  margin: 0 auto;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+</style>
+
+<script>
+    
+</script>
+<template>
+  <div id="onboarding">
+      <paper-material elevation="4">
+        <h2>Header</h2>
+        <div class="buttons">
+          <paper-button class="center dropdown-trigger" flat>Select an Event</paper-button></br>
+          <iron-dropdown id="dropdown">
+          </iron-dropdown>
+          <paper-button class="center" id="my-button" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
+        </div>
+      </paper-material>
+  </div>
+</template>
+
+<script>
+    // element registration
+    Polymer({
+      is: "onboarding-view",
+
+      // add properties and methods on the element's prototype
+      properties: {
+        // declare properties for the element's public API
+        
+      }
+    });
+  </script>
+
+</dom-module>
