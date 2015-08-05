@@ -67,6 +67,20 @@
     <onboarding-view class="hidden"></onboarding-view>
     </div>
     <script type="text/javascript">
+       	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
+		localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
+
+		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
+			// We aleady have an access token
+			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
+			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
+		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
+			// No, but we we do have a oauth request token
+			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
+			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
+				localStorage.setItem( 'eventjoy_access_token', response.access_token);
+			});
+		}
   
 		initialiseDB();
 
