@@ -96,14 +96,14 @@
 					observer: '_eventDateChanged'
 				},
 				attendees:{
-					type: Number,
-					value: 4000,
-					observer: '_attendeeCountChanged'
+					type: String,
+					value: "4000",
+					// observer: '_attendeeCountChanged'
 				},
 				revenue:{
-					type: Number,
-					value: 634.50,
-					observer: '_revenueTotalChanged'
+					type: String,
+					value: "634.50",
+					// observer: '_revenueTotalChanged'
 				},
 				currencysymbol:{
 					type: String,
@@ -118,12 +118,12 @@
 			_eventDateChanged: function(newEventDate){
 				this.eventdate = newEventDate;
 			},
-			_attendeeCountChanged: function(attendeeCountForOrder, oldCount){
-				this.attendees = oldCount + attendeeCountForOrder;
-			},
-			_revenueTotalChanged: function(revenueForOrder, oldTotal){
-				this.revenue = oldTotal + revenueForOrder;
-			},
+			// _attendeeCountChanged: function(attendeeCountForOrder, oldCount){
+			// 	this.attendees = oldCount + attendeeCountForOrder;
+			// },
+			// _revenueTotalChanged: function(revenueForOrder, oldTotal){
+			// 	this.revenue = oldTotal + revenueForOrder;
+			// },
 			_currencySymbolChanged: function(newCurrencySymbol){
 				this.currencysymbol = newCurrencySymbol;
 			}

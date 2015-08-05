@@ -28,7 +28,7 @@
 
 			// Get all mine events
 			var event_id_for_orders = 0;
-			eventjoy.events(null, function(success, events) {
+			eventjoy.events(null, {}, function(success, events) {
 				if ( success && events ) {
 					if ( events.data.length && events.data[0].ID ) {
 						event_id_for_orders = events.data[0].ID;
