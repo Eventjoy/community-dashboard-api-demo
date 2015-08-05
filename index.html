@@ -6,6 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   	<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 	<script src="js/eventjoy.storage.js"></script>
+	<script src="js/moment.js"></script>
 	<script type="text/javascript" src="lib/eventjoy.js"></script>
   	
     <!-- Stylesheet main-->
@@ -49,14 +50,14 @@
 
       <div id="secondary-card-wrapper" >
           <secondary-card></secondary-card>
+          <!-- <secondary-card></secondary-card>
           <secondary-card></secondary-card>
-          <secondary-card></secondary-card>
-          <secondary-card></secondary-card>
+          <secondary-card></secondary-card> -->
       </div>
       
         <div id="footer-wrapper">
     	       <!-- Footer element -->
-      	     <event-footer revenue='35,0000'  attendees='3,500'/>
+      	     <event-footer eventname='' revenue='0'  attendees='0'/>
         </div>
     </div>
 
@@ -68,21 +69,49 @@
     	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
 		localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
 
-					if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
-				// We aleady have an access token
-				console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
-				eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
-			} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
-				// No, but we we do have a oauth request token
-				console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
-				eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
-					localStorage.setItem( 'eventjoy_access_token', response.access_token);
-				});
-			}
+		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
+			// We aleady have an access token
+			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
+			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
+		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
+			// No, but we we do have a oauth request token
+			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
+			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
+				localStorage.setItem( 'eventjoy_access_token', response.access_token);
+			});
+		}
 			
-			initialiseDB();
+		initialiseDB();
 
-				// $("#footer-wrapper").html("<event-footer revenue='50' attendees='100'/>");
+		var eventID = 0;
+
+		// if eventID is passed in, it should be grabbed here.(Dropdown)
+		function getSpecificEvent(event_id) {
+			eventjoy.events(eventID, {}, function(success, events) {
+				if ( success && events ) {
+					if ( events.data ) {
+						event_id_for_orders = events.data.ID;
+						$("event-footer").attr("eventname", events.data.name);
+						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
+
+						console.log(event_id_for_orders);
+					}
+				}
+			});
+		}
+
+		if(eventID == 0) {
+			eventjoy.events("", {}, function(success, events) {
+				if ( success && events ) {
+					if ( events.data.length && events.data[0].ID ) {
+						eventID = events.data[0].ID;
+						getSpecificEvent(eventID);
+					}
+				}
+			});
+		} else {
+			getSpecificEvent(eventID);	
+		}
 
 		eventjoy.events_orders(622739, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
 			if ( success && orders ) {
@@ -101,12 +130,11 @@
 			// 	console.log(orders);
 			// });
 			window.store.getTotalRevenue(function( status, totalRevenue ) {
-				// $("#footer-wrapper").html("<event-footer revenue='50' attendees='" + totalRevenue + "'/>");
 				window.store.getTotalAttendees(function( status, totalAttendees ) {
-					// $("#footer-wrapper").html("<event-footer revenue='" + totalRevenue + "' attendees='" + totalAttendees + "'/>");
 					var footer = $("event-footer");
 					footer.attr("revenue", totalRevenue);
 					footer.attr("attendees", totalAttendees);
+
 					console.log("Total Attendees: " + totalAttendees);
 				});
 				console.log("Total Revenue: " + totalRevenue);
