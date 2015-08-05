@@ -1,17 +1,36 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-      
+<link rel="import" href="../bower_components/paper-material/paper-material.html"></script>
+<link rel="import" href="card-list-item.html">
 <dom-module id="main-card">
 
 <style>
 
+ paper-material{
+    height:100%;
+    width: 50%;
+    padding: 0px;
+    margin: 0px auto;
+    background: #FFF;
+    left:25%;
+    right:25%;
+    top:5%;
+    float: left;
+    clear:both;
+    min-width:722px;
+  }
+
+  #main-card{
+    height:100%;
+  }
+
   .left-column{
-    width:30%;
+    float:left;
+     width:35%;
+     background-color:#FFFFFF;
   }
   .header-image{
-      width: 70%;
+      width: 65%;
       height: 100%;
-      margin:0px;
-      padding:0px;
   }
 
   .float-left{
@@ -26,12 +45,81 @@
     width: 100%;
     height: 100%;
   }
+
+  .center{
+    text-align: center;
+    display: table-cell; 
+    padding:8px;
+  }
+  #card-header{
+    padding:16px;
+    height:20%;
+  }
+  #secondary-info{
+    clear:both;
+    padding:16px;
+    height: 10%;
+  }
+  #registration-wrapper{
+    height: 70%;
+    padding:16px;
+  }
+  .main-card-title{
+    font-size: 14px; 
+    font-weight: 700;
+    color: rgba(0,0,0,.87);
+  }
+
+  .metric{
+    color: #FF4081;
+    font-weight: 500;
+    font-size:42px;
+  }
+
+  .metric-description{
+    font-size: 14px; 
+    font-weight: 500;
+    color: rgba(0,0,0,.54);
+  }
+
 </style>
 
 <template>
-    <div class="header-image float-right"><img src={{headerimage}}></img></div>
-    <!--TODO: set this up to handle all the card style -->
-    <div class="left-column float-right"></div>
+  <paper-material elevation="2">
+      <div id="main-card">
+        <div class="header-image float-right"><img src={{headerimage}}></img></div>
+        <!--TODO: set this up to handle all the card style -->
+        <div class="left-column float-left">
+                <div id="card-header">
+                    <div class="float-left center">
+                      <span class="main-card-title">ATTENDEES</span></br>
+                      <span class="metric">{{registrationcount}}</span>
+                    </div>
+                    
+                    <div class="float-right center">
+                      <span class="main-card-title">REVENUE</span></br>
+                      <span class="metric">{{ordertotal}}</span>
+                    </div>
+                </div>
+                <div id="secondary-info">
+                    <div class="float-left center">
+                      <span class="main-card-title">DISCOUNT CODE</span></br>
+                      <span class="metric-description">{{discountcode}}</span>
+                    </div>
+                    <div class="float-right center">
+                      <span class="main-card-title">PROMOTER</span></br>
+                      <span class="metric-description">{{promoter}}</span>
+                    </div>
+                </div>
+                <div id="registration-wrapper">
+                  <card-list-item></card-list-item>
+                  <card-list-item></card-list-item>
+                  <card-list-item></card-list-item>
+                  <card-list-item></card-list-item>
+                </div>
+        </div>
+      </div>
+  </paper-material>
 </template>
 
 <script>
@@ -46,8 +134,27 @@
           type: String,
           value: "http://img1.imagehousing.com/1/f399bd0d98e048946053582608691a16.jpg"
         },
-        orderdata:{
-          
+        registrationcount:{
+          type: String,
+          value: "6"
+        },
+        ordertotal:{
+          type: String,
+          value: "$100.00"
+        },
+        discountcode:{
+          type: String,
+          value: "NONE"
+        },
+        promoter:{
+          type: String,
+          value: "NONE"
+        },
+        registrations:{
+          type: Array,
+          value: function() {
+            return [];
+          }
         }
       }
     });
