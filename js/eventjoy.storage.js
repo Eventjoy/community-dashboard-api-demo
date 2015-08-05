@@ -99,7 +99,7 @@ function initialiseDB() {
 		}
 
 		// sort can only be next(asc) order, prev(desc) order.
-		window.store.getOrders = function( sort, size, callback ) {
+		window.store.getOrders = function( sort, size, timestamp, callback ) {
 			sort = sort.toLowerCase();
 			if(sort && (sort == "prev" || sort == "next")) {
 				console.log(sort);
@@ -121,16 +121,35 @@ function initialiseDB() {
 				}
 
 				var counter = 0;
+				var prev = null;
 				cursorRequest.onsuccess = function(event) {
 					var cursor = event.target.result;
 					if(cursor) {
-						if(counter < size || size == -1) {
+						// Current one and one previous one
+						if(cursor.value.completed == timestamp && prev) {
+							console.log("Got new one!");
+							orders.push(prev);
+							counter++;
 							orders.push(cursor.value);
+							counter++;
+						}
+						if(counter < size || size == -1) {
+							// Next 4
+							if(!timestamp || cursor.value.completed < timestamp) {
+								orders.push(cursor.value);
+								counter++;
+							} else {
+								prev = cursor.value;
+								console.log("SKIPPING");
+							}
 						} else {
+							prev = cursor.value;
 							console.log("SKIP");
 						}
+
+						if(counter == size && callback) { callback(false, orders); counter++; }
+
 						cursor.continue();
-						counter++;
 					}
 				};
 				cursorRequest.onerror = function(e) {
