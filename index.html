@@ -66,21 +66,7 @@
       
     </div>
     <script type="text/javascript">
-    	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
-		localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
-
-		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
-			// We aleady have an access token
-			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
-			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
-		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
-			// No, but we we do have a oauth request token
-			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
-			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
-				localStorage.setItem( 'eventjoy_access_token', response.access_token);
-			});
-		}
-			
+  
 		initialiseDB();
 
 		var eventID = 0;
@@ -100,6 +86,17 @@
 					}
 				}
 			});
+		}
+
+		function getTicketName(ticket_id, ticketData) {
+			// console.log(ticket_id);
+			// console.log(ticketData);
+			for(var x in ticketData.data) {
+				if(ticket_id == ticketData.data[x].id) {
+					return ticketData.data[x].name;	
+				}
+			}
+			return "";
 		}
 
 		function getEventOrders(event_id) {
@@ -123,11 +120,32 @@
 						if(orders[0].promoter) {
 							promoter = orders[0].promoter;
 						}
-						$("main-card").attr("registrationcount", orders[0].num_of_attendees);
-						$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
-						$("main-card").attr("discountcode", discountcode);
-						$("main-card").attr("promoter", promoter);
-						$("main-card").show();
+						eventjoy.events_tickets(eventID, {}, function(status, ticketData) {
+							// console.log(ticketData);
+							eventjoy.order_attendees(orders[0].ID, {}, function(status, attendeeData) {
+								var attendees = [];
+								for(x in attendeeData.data) {
+									// console.log(attendeeData.data[x]);
+									var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
+									var attendeeDetail = {
+										"name" : attendeeData.data[x].attendee.name,
+										"ticket_name" : ticketName
+									};
+									attendees.push(attendeeDetail);
+									attendees.push(attendeeDetail);
+									// attendees += attendeeData.data[x].attendee.name + ", ";
+									// console.log(attendeeDetail);
+								}
+								// console.log(attendees);
+								$("main-card").attr("attendeenames", attendees);
+								$("main-card").attr("registrationcount", orders[0].num_of_attendees);
+								$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
+								$("main-card").attr("discountcode", discountcode);
+								$("main-card").attr("promoter", promoter);
+								$("main-card").show();
+							});
+						});
+
 						if(orders.length > 1) {
 							for(var i in orders.slice(1)) {
 								// console.log(orders[i]);
@@ -145,7 +163,7 @@
 									for(x in attendeeData.data) {
 										attendees += attendeeData.data[x].attendee.name + ", ";
 									}
-									console.log(attendeeData);
+									// console.log(attendeeData);
 									$("#secondary-card-wrapper").append("<secondary-card registrationcount='"+orders[i].num_of_attendees+"' ordertotal='"+orders[i].total.slice(0, -3)+"' attendeenames='"+ attendees.slice(0, -2) +"' discountcode='"+discountcode+"' promoter='"+promoter+"'></secondary-card>");
 								});
 							}
@@ -158,9 +176,9 @@
 						footer.attr("revenue", totalRevenue);
 						footer.attr("attendees", totalAttendees);
 
-						console.log("Total Attendees: " + totalAttendees);
+						// console.log("Total Attendees: " + totalAttendees);
 					});
-					console.log("Total Revenue: " + totalRevenue);
+					// console.log("Total Revenue: " + totalRevenue);
 				});
 			});
 		}
