@@ -41,7 +41,7 @@
     <div id="main-content">
     	<!-- This is where we want to define values dynamically -->
       <div id="main-card-wrapper">
-      		  <main-card></main-card>
+      	<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none">
       </div>
 
     	<div id="recent-activity">
@@ -49,7 +49,7 @@
       </div>
 
       <div id="secondary-card-wrapper" >
-          <secondary-card></secondary-card>
+          <!-- <secondary-card></secondary-card> -->
           <!-- <secondary-card></secondary-card>
           <secondary-card></secondary-card>
           <secondary-card></secondary-card> -->
@@ -90,13 +90,78 @@
 			eventjoy.events(eventID, {}, function(success, events) {
 				if ( success && events ) {
 					if ( events.data ) {
+						console.log(events.data);
 						event_id_for_orders = events.data.ID;
 						$("event-footer").attr("eventname", events.data.name);
 						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
-
-						console.log(event_id_for_orders);
+						if(events.data && events.data.images && events.data.images.bodybg && events.data.images.bodybg[0]) {
+							$("main-card").attr("headerimage", events.data.images.bodybg[0]);
+						}
 					}
 				}
+			});
+		}
+
+		function getEventOrders(event_id) {
+			eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
+				if ( success && orders ) {
+					window.store.clearOrders();
+					// console.log(orders);
+					orders.data.forEach( function(order) {
+						window.store.addOrder(order);
+					});
+				}
+				window.store.getOrders("prev", 5, "", function( status, orders ) {
+					if(orders.length > 0) {
+						// console.log(orders[0]);
+
+						var discountcode = "NONE";
+						if(orders[0].discount_codes && orders[0].discount_codes.length > 0) {
+							discountcode = orders[0].discount_codes[0];
+						}
+						var promoter = "NONE";
+						if(orders[0].promoter) {
+							promoter = orders[0].promoter;
+						}
+						$("main-card").attr("registrationcount", orders[0].num_of_attendees);
+						$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
+						$("main-card").attr("discountcode", discountcode);
+						$("main-card").attr("promoter", promoter);
+						$("main-card").show();
+						if(orders.length > 1) {
+							for(var i in orders.slice(1)) {
+								// console.log(orders[i]);
+								discountcode = "NONE";
+								if(orders[i].discount_codes && orders[i].discount_codes.length > 0) {
+									discountcode = orders[i].discount_codes[i];
+								}
+								var promoter = "NONE";
+								if(orders[i].promoter) {
+									promoter = orders[i].promoter;
+								}
+
+								eventjoy.order_attendees(orders[i].ID, {}, function(status, attendeeData) {
+									var attendees = "";
+									for(x in attendeeData.data) {
+										attendees += attendeeData.data[x].attendee.name + ", ";
+									}
+									console.log(attendeeData);
+									$("#secondary-card-wrapper").append("<secondary-card registrationcount='"+orders[i].num_of_attendees+"' ordertotal='"+orders[i].total.slice(0, -3)+"' attendeenames='"+ attendees.slice(0, -2) +"' discountcode='"+discountcode+"' promoter='"+promoter+"'></secondary-card>");
+								});
+							}
+						}
+					}
+				});
+				window.store.getTotalRevenue(function( status, totalRevenue ) {
+					window.store.getTotalAttendees(function( status, totalAttendees ) {
+						var footer = $("event-footer");
+						footer.attr("revenue", totalRevenue);
+						footer.attr("attendees", totalAttendees);
+
+						console.log("Total Attendees: " + totalAttendees);
+					});
+					console.log("Total Revenue: " + totalRevenue);
+				});
 			});
 		}
 
@@ -106,40 +171,16 @@
 					if ( events.data.length && events.data[0].ID ) {
 						eventID = events.data[0].ID;
 						getSpecificEvent(eventID);
+						getEventOrders(eventID);
 					}
 				}
 			});
 		} else {
 			getSpecificEvent(eventID);	
+			getEventOrders(eventID);
 		}
 
-		eventjoy.events_orders(622739, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
-			if ( success && orders ) {
-				// fetchOrdersDiv.innerHTML = JSON.stringify(orders, null, 2);
-				window.store.clearOrders();
-				// do {
-					orders.data.forEach( function(order) {
-						window.store.addOrder(order);
-					});
-				// } while(orders.links.next) 
-				// console.log(orders.links.next);
-			}
-			// window.store.getOrders("prev", 5, "2014-12-16T10:45:42.000Z", function( status, orders ) {
-			// // window.store.getOrders("prev", 5, "2015-02-17T06:19:55.000Z", function( status, orders ) {
-			// // window.store.getOrders("prev", 5, "", function( status, orders ) {
-			// 	console.log(orders);
-			// });
-			window.store.getTotalRevenue(function( status, totalRevenue ) {
-				window.store.getTotalAttendees(function( status, totalAttendees ) {
-					var footer = $("event-footer");
-					footer.attr("revenue", totalRevenue);
-					footer.attr("attendees", totalAttendees);
 
-					console.log("Total Attendees: " + totalAttendees);
-				});
-				console.log("Total Revenue: " + totalRevenue);
-			});
-		});
     </script>
   </body>
 </html>

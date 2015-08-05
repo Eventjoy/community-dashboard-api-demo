@@ -117,7 +117,7 @@ function initialiseDB() {
 			    var cursorRequest = request.index('completed').openCursor(null, sort);
 
 				trans.oncomplete = function(e) {
-					if (callback) callback(true, orders);
+					// if (callback) callback(true, orders);
 				}
 
 				var counter = 0;
@@ -140,11 +140,11 @@ function initialiseDB() {
 								counter++;
 							} else {
 								prev = cursor.value;
-								console.log("SKIPPING");
+								// console.log("SKIPPING");
 							}
 						} else {
 							prev = cursor.value;
-							console.log("SKIP");
+							// console.log("SKIP");
 						}
 
 						if(counter == size && callback) { callback(false, orders); counter++; }
