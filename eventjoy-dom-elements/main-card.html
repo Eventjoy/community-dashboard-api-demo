@@ -24,9 +24,9 @@
   }
 
   .left-column{
-    position:relative;
-    float:left;
-    width:35%;
+    position:absolute;
+    left: 0;width:320px;
+    top:0;bottom:0;
     background-color:#FFFFFF;
     max-height:100%;
     overflow:hidden;
@@ -39,9 +39,9 @@
     box-shadow: inset 0px -10px 10px 0px #fff;
   }
   .header-image{
-    position:relative;
-    width: 65%;
-    height: 100%;
+    position:absolute;
+    left: 320px;right:0;
+    top:0;bottom:0;
     overflow:hidden;
   }
   .header-image>img{
@@ -100,37 +100,37 @@
 <template>
   <paper-material elevation="2">
       <div id="main-card">
-        <div class="header-image float-right"><img src="{{headerimage}}"></img></div>
+        <div class="header-image"><img src="{{headerimage}}"></img></div>
         <!--TODO: set this up to handle all the card style -->
-        <div class="left-column float-left">
-                <div id="card-header">
-                    <div class="float-left center fix-six max-six">
-                      <span class="main-card-title">ATTENDEES</span></br>
-                      <span class="metric">{{registrationcount}}</span>
-                    </div>
-                    
-                    <div class="float-right center fix-six max-six">
-                      <span class="main-card-title">REVENUE</span></br>
-                      <span class="metric">{{ordertotal}}</span>
-                    </div>
-                </div>
-                <div id="secondary-info">
-                    <div class="float-left center fix-six max-six">
-                      <span class="main-card-title">DISCOUNT CODE</span></br>
-                      <span class="metric-description">{{discountcode}}</span>
-                    </div>
-                    <div class="float-right center fix-six max-six">
-                      <span class="main-card-title">PROMOTER</span></br>
-                      <span class="metric-description">{{promoter}}</span>
-                    </div>
-                </div>
-                <div id="registration-wrapper">
-                  <!-- Array of Elements -->
-                   <template is="dom-repeat" items="{{attendeenames}}">
-                      <card-list-item attendeename="{{item.name}}" tickettype="{{item.ticket_name}}"></card-list-item> 
-                   </template>
-                </div>
-                <div class="inner-fade"></div>
+        <div class="left-column">
+          <div id="card-header">
+              <div class="float-left center fix-six max-six">
+                <span class="main-card-title">ATTENDEES</span></br>
+                <span class="metric">{{registrationcount}}</span>
+              </div>
+              
+              <div class="float-right center fix-six max-six">
+                <span class="main-card-title">REVENUE</span></br>
+                <span class="metric">{{ordertotal}}</span>
+              </div>
+          </div>
+          <div id="secondary-info">
+              <div class="float-left center fix-six max-six">
+                <span class="main-card-title">DISCOUNT CODE</span></br>
+                <span class="metric-description">{{discountcode}}</span>
+              </div>
+              <div class="float-right center fix-six max-six">
+                <span class="main-card-title">PROMOTER</span></br>
+                <span class="metric-description">{{promoter}}</span>
+              </div>
+          </div>
+          <div id="registration-wrapper">
+			<!-- Array of Elements -->
+			<template is="dom-repeat" items="{{attendeenames}}">
+            	<card-list-item attendeename="{{item.name}}" tickettype="{{item.ticket_name}}"></card-list-item> 
+          	</template>
+          </div>
+          <div class="inner-fade"></div>
         </div>
       </div>
   </paper-material>

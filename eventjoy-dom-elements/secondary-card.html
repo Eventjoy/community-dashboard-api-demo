@@ -104,10 +104,26 @@
     color: rgba(255,255,255,1);
   }
 
+  .transition {
+    -webkit-transition: all 600ms ease-in-out;
+    -moz-transition: all 600ms ease-in-out;
+    -ms-transition: all 600ms ease-in-out;
+    transition: all 600ms ease-in-out;
+  }
+  .move-right {
+    -webkit-transform: translate(100%,0); /* Safari */
+    -moz-transform: translate(100%,0); /* FF */
+    -ms-transform: translate(100%,0); /* IE 9 */
+    transform: translate(100%,0);
+  }
+  secondary-card:last-child .move-right {
+    opacity:0;
+  }
+
 </style>
 
 <template>
-  <div class="transparent-padding">
+  <div class="transparent-padding transition" onclick="$(this).toggleClass('move-right');return false;">
     <paper-material elevation="2">
       <div class="small-card">
           <div id="card-header">
