@@ -53,7 +53,7 @@
   
   .content-area{
     height:50%;
-    padding:16px;
+    padding:2%;
 
   }
   .center{
@@ -70,7 +70,7 @@
   .padded-wrapper{
     width:80%;
     margin:0px auto;
-    padding:8px 0 0 0;
+    padding:1.5% 0 0 0;
     height:100%;
   }
 
@@ -104,26 +104,10 @@
     color: rgba(255,255,255,1);
   }
 
-  .transition {
-    -webkit-transition: all 600ms ease-in-out;
-    -moz-transition: all 600ms ease-in-out;
-    -ms-transition: all 600ms ease-in-out;
-    transition: all 600ms ease-in-out;
-  }
-  .move-right {
-    -webkit-transform: translate(100%,0); /* Safari */
-    -moz-transform: translate(100%,0); /* FF */
-    -ms-transform: translate(100%,0); /* IE 9 */
-    transform: translate(100%,0);
-  }
-  secondary-card:last-child .move-right {
-    opacity:0;
-  }
-
 </style>
 
 <template>
-  <div class="transparent-padding transition" onclick="$(this).toggleClass('move-right');return false;">
+  <div class="transparent-padding transition" onclick="testAnimation();return false;">
     <paper-material elevation="2">
       <div class="small-card">
           <div id="card-header">
@@ -140,7 +124,7 @@
           </div>
           <div id="card-content">
             <div class="content-area">
-            <p>{{attendeenames}}</p>
+              <p>{{attendeenames}}</p>
             </div>
             <div class="fixed-bottom">
               <div class="padded-wrapper">
@@ -197,6 +181,23 @@
         }
       }
     });
+
+    function testAnimation() {
+      /*$('#main-card-wrapper').addClass('move-right');*/
+      $('#main-card-wrapper .transition').show().addClass('move-right');
+      $('#secondary-card-wrapper .transition').each( function(idx, elem) {
+        setTimeout( function() {
+          $(elem).addClass('move-right');
+        }, 100 * ($('.transition').length-idx));
+        /*}, 20 * idx);*/
+      });
+
+      setTimeout( function() {
+        // This is where we shuffle the actual DOM elements, and reset the animation
+        $('.move-right').removeClass('move-right');
+      }, 1100);
+      return false;
+    }
   </script>
 
 </dom-module>

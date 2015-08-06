@@ -70,7 +70,8 @@
     <div id="main-content" class="hidden">
     	<!-- This is where we want to define values dynamically -->
       <div id="main-card-wrapper">
-      	<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none">
+      	<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none" class="incoming"></main-card>
+        <!--<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none" class="incoming"></main-card>-->
       </div>
 
     	<div id="recent-activity">
@@ -125,7 +126,7 @@
     						$("event-footer").attr("eventname", events.data.name);
     						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
     						if(events.data && events.data.images && events.data.images.bodybg && events.data.images.bodybg[0]) {
-    							$("main-card").attr("headerimage", events.data.images.bodybg[0]);
+    							$("main-card.incoming").attr("headerimage", events.data.images.bodybg[0]);
     						}
     					}
     				}
