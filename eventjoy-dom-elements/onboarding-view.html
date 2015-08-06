@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html"></script>
 <link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html"></script>
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html"></script>
+<link rel="import" href="dropdown-custom.html"></script>
 <dom-module id="onboarding-view">
 
 <style>
@@ -84,13 +85,14 @@ paper-material{
       <div id="onboarding">
         <div class="onboarding-text">
           <p><b>What event do you want to visualize?</b></p>
-          <paper-button class="center dropdown-trigger" flat>Select an Event</paper-button></br>
+          <!-- <paper-button class="center dropdown-trigger" flat>Select an Event</paper-button></br>
           <iron-dropdown id="dropdown" horizontal-align="right" vertical-align="top">
             <div class="dropdown-content">Item 1</div>
             <div class="dropdown-content">Item 2</div>
             <div class="dropdown-content">Item 3</div>
             <div class="dropdown-content">Item 4</div>
-          </iron-dropdown>
+          </iron-dropdown> -->
+          <dropdown-custom class="center dropdown-trigger" an-array="{{eventArray}}"></dropdown-custom>
         </div>
         <div class="onboarding-confirm">
           <paper-button class="center" id="my-button" onClick="showLoading()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
@@ -117,7 +119,7 @@ paper-material{
       // add properties and methods on the element's prototype
       properties: {
         // declare properties for the element's public API
-        
+        eventArray: Array
       }
     });
   </script>
