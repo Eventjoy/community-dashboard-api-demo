@@ -12,9 +12,10 @@
     max-height: 48px;
   }
   #ticket-description-wrapper{
-    width:90%;
     padding-left: 52px;
     padding-top:4px;
+    width:100%;
+    padding: 8px;
   }
 
   #wrapper{
@@ -22,15 +23,20 @@
     padding: 8px;
     float:left;
   }
+  .name{
+      font-size: 18px;
+      color: rgba(0,0,0,.87);
+  }
+  .ticket{
+      font-size: 14px;
+      color: rgba(0,0,0,.54);
+  }
 </style>
 
 <template>
-  <div id="wrapper">
-    <img src={{attendeeimage}}>
-    <div id="ticket-description-wrapper">
-      <span>{{attendeename}}</span></br>
-      <span>{{tickettype}}</span>
-    </div>
+  <div id="ticket-description-wrapper">
+    <span class="name">{{attendeename}}</span></br>
+    <span class="ticket">{{tickettype}}</span>
   </div>
 </template>
 
@@ -45,10 +51,6 @@
         attendeename:{
           type: String,
           value: "John Smith"
-        },
-        attendeeimage:{
-          type: String,
-          value: "https://lh3.googleusercontent.com/-cVR_LV76Kfc/AAAAAAAAAAI/AAAAAAAAAB8/GJpq93_GU9U/s92-c-k-no/photo.jpg"
         },
         tickettype:{
           type: String,

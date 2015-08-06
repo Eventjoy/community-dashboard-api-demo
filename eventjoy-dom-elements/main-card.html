@@ -125,10 +125,10 @@
                     </div>
                 </div>
                 <div id="registration-wrapper">
-                  <card-list-item></card-list-item>
-                  <card-list-item></card-list-item>
-                  <card-list-item></card-list-item>
-                  <card-list-item></card-list-item>
+                  <!-- Array of Elements -->
+                   <template is="dom-repeat" items="{{attendeenames}}">
+                      <card-list-item attendeename="{{item.name}}" tickettype="{{item.ticket_name}}"></card-list-item> 
+                   </template>
                 </div>
                 <div class="inner-fade"></div>
         </div>
@@ -164,12 +164,7 @@
           type: String,
           value: "NONE"
         },
-        registrations:{
-          type: Array,
-          value: function() {
-            return [];
-          }
-        }
+        attendeenames: Array
       }
     });
   </script>

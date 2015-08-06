@@ -176,12 +176,11 @@
 											"ticket_name" : ticketName
 										};
 										attendees.push(attendeeDetail);
-										attendees.push(attendeeDetail);
 										// attendees += attendeeData.data[x].attendee.name + ", ";
 										// console.log(attendeeDetail);
 									}
 									// console.log(attendees);
-									$("main-card").attr("attendeenames", attendees);
+									$("main-card").attr("attendeenames", JSON.stringify(attendees));
 									$("main-card").attr("registrationcount", orders[0].num_of_attendees);
 									$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
 									$("main-card").attr("discountcode", discountcode);
