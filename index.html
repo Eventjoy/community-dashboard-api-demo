@@ -232,36 +232,36 @@
     		}
 
     		function reloadPageWithNewOrder(event_id) {
-				window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
-					if(orders && orders.length > 0) {
-						for(var i in orders) {
-							var order = orders[i];
-							// console.log(order);
-							discountcode = "NONE";
-							if(order.discount_codes && order.discount_codes.length > 0) {
-								discountcode = order.discount_codes[0];
-							}
-							var promoter = "NONE";
-							if(order.promoter) {
-								promoter = order.promoter;
-							}
-							if(i == 0) {
-								addPrimaryCard(event_id, order, discountcode, promoter);
-							}
-							addSecondaryCard(order, discountcode, promoter);
-						}
-						window.store.getTotalRevenue(function( status, totalRevenue ) {
-	    					window.store.getTotalAttendees(function( status, totalAttendees ) {
-	    						var footer = $("event-footer");
-	    						footer.attr("revenue", totalRevenue);
-	    						footer.attr("attendees", totalAttendees);
+  				window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
+  					if(orders && orders.length > 0) {
+  						for(var i in orders) {
+  							var order = orders[i];
+  							// console.log(order);
+  							discountcode = "NONE";
+  							if(order.discount_codes && order.discount_codes.length > 0) {
+  								discountcode = order.discount_codes[0];
+  							}
+  							var promoter = "NONE";
+  							if(order.promoter) {
+  								promoter = order.promoter;
+  							}
+  							if(i == 0) {
+  								addPrimaryCard(event_id, order, discountcode, promoter);
+  							}
+  							addSecondaryCard(order, discountcode, promoter);
+  						}
+  						window.store.getTotalRevenue(function( status, totalRevenue ) {
+  	    					window.store.getTotalAttendees(function( status, totalAttendees ) {
+  	    						var footer = $("event-footer");
+  	    						footer.attr("revenue", totalRevenue);
+  	    						footer.attr("attendees", totalAttendees);
 
-	    						// console.log("Total Attendees: " + totalAttendees);
-	    					});
-	    					// console.log("Total Revenue: " + totalRevenue);
-	    				});
-					}
-				});
+  	    						// console.log("Total Attendees: " + totalAttendees);
+  	    					});
+  	    					// console.log("Total Revenue: " + totalRevenue);
+  	    				});
+  					}
+  				});
     		}
 
     		if(eventID == 0) {
@@ -279,10 +279,33 @@
     			getSpecificEvent(eventID);	
     			getEventOrders(eventID);
     		}
+
+        window.newDataTransition = (function newDataTransition(changeData) {
+          //$('#main-card-wrapper').addClass('move-right');
+          $('#main-card-wrapper .transition').show().removeClass('move-off').removeClass('move-in').addClass('move-right');
+          $('#secondary-card-wrapper .transition').each( function(idx, elem) {
+            setTimeout( function() {
+              $(elem).addClass('move-right');
+            }, 100 * ($('.transition').length-idx));
+            //}, 20 * idx);
+          });
+
+          setTimeout( function() {
+            $('#main-card-wrapper .transition').show().removeClass('move-right').addClass('move-off');
+          }, 650);
+
+          setTimeout( function() {
+            // This is where we shuffle the actual DOM elements, and reset the animation
+            $('.move-right').removeClass('move-right');
+            $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
+            if ( changeData ) changeData();
+          }, 1100);
+        });
+
     		(function poll_data_into_database() {
 			   setTimeout(function() {
 			   		console.log("Polling for DB!!!");
-			   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50}, function(success, orders) {
+			   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50, "sort": "-completed"}, function(success, orders) {
 			   			console.log(orders);
 						if ( success && orders ) {
 							orders.data.forEach( function(order) {
@@ -290,7 +313,14 @@
 								window.store.addOrder(order, function(success, order_id, order) {
 									if(success) {
 										console.log("Got new data :)");
-										reloadPageWithNewOrder(eventID);
+										//reloadPageWithNewOrder(eventID);
+
+                    // Animate the new data in
+                    newDataTransition( function() {
+                      $('secondary-card').remove();
+                      reloadPageWithNewOrder(eventID);
+                    });
+
 									} else {
 										// TODO: Get the latest in DB and compare completed against current one.
 										// If multiple orders came in, current logic will not advance.
