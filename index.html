@@ -5,41 +5,69 @@
   	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700' rel='stylesheet' type='text/css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   	<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-	<script src="js/eventjoy.storage.js"></script>
-	<script src="js/moment.js"></script>
-	<script type="text/javascript" src="lib/eventjoy.js"></script>
+  	<script src="js/eventjoy.storage.js"></script>
+  	<script src="js/moment.js"></script>
+  	<script type="text/javascript" src="lib/eventjoy.js"></script>
   	
     <!-- Stylesheet main-->
     <link rel="stylesheet" type="text/css" href="css/main-css.css">
     
     <script>
-    var showing = false;
-    function showSettings(){
-      if(!showing){
-        $('settings-view').removeClass('hidden');
-        $('settings-view').addClass('showing');
-        showing = true;
-      }else{
-        $('settings-view').removeClass('showing');
-        $('settings-view').addClass('hidden');
-        showing = false;
+      var showing = false;
+      function showSettings(){
+        if(!showing){
+          $('settings-view').removeClass('hidden');
+          $('settings-view').addClass('showing');
+          showing = true;
+        }else{
+          $('settings-view').removeClass('showing');
+          $('settings-view').addClass('hidden');
+          showing = false;
+        }
       }
-    }
-  </script>
+      function showOnboarding() {
+        $('onboarding-view').removeClass('hidden');
+        $('onboarding-view').addClass('showing');
+        $('onboarding-view #onboarding-background').removeClass('hiding');
+        $('onboarding-view .pages').addClass('hiding');
+        $('onboarding-view #onboarding').removeClass('hidden');
+        $('onboarding-view #loading').addClass('hiding');
+      }
+      function hideOnboarding() {
+        $('onboarding-view').addClass('hidden');
+        $('onboarding-view').removeClass('showing');
+        $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #loading').addClass('hidden');
+      }
+      function showLoading() {
+        $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #loading').removeClass('hidden');
+
+        setTimeout( showContent, 4000 );
+      }
+      function showContent() {
+        $('onboarding-view #onboarding-background').addClass('hiding');
+        $('onboarding-view .pages').addClass('hiding');
+        setTimeout( function() {
+          hideOnboarding();
+          $('#main-content').removeClass('hidden');
+        }, 750);
+      }
+    </script>
   
     <!-- Polymer import -->
     <link rel="import" href="bower_components/polymer/polymer.html">
 
   	<!-- Eventjoy Defined Polymer Dom Elements -->
+    <link rel="import" href="eventjoy-dom-elements/onboarding-view.html">
     <link rel="import" href="eventjoy-dom-elements/main-card.html">
     <link rel="import" href="eventjoy-dom-elements/secondary-card.html">
     <link rel="import" href="eventjoy-dom-elements/event-footer.html">
     <link rel="import" href="eventjoy-dom-elements/settings-view.html">
-    <link rel="import" href="eventjoy-dom-elements/onboarding-view.html">
-
   </head>
+
   <body>
-    <div id="main-content">
+    <div id="main-content" class="hidden">
     	<!-- This is where we want to define values dynamically -->
       <div id="main-card-wrapper">
       	<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none">
@@ -67,153 +95,156 @@
     <onboarding-view class="hidden"></onboarding-view>
     </div>
     <script type="text/javascript">
-       	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
-		localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
+      $(document).ready(function() {
+      	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
+  		  localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
 
-		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
-			// We aleady have an access token
-			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
-			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
-		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
-			// No, but we we do have a oauth request token
-			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
-			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
-				localStorage.setItem( 'eventjoy_access_token', response.access_token);
-			});
-		}
-  
-		initialiseDB();
+    		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
+    			// We aleady have an access token
+    			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
+    			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
+    		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
+    			// No, but we we do have a oauth request token
+    			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
+    			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
+    				localStorage.setItem( 'eventjoy_access_token', response.access_token);
+    			});
+    		}
+    			
+    		initialiseDB();
 
-		var eventID = 0;
+    		var eventID = 0;
 
-		// if eventID is passed in, it should be grabbed here.(Dropdown)
-		function getSpecificEvent(event_id) {
-			eventjoy.events(eventID, {}, function(success, events) {
-				if ( success && events ) {
-					if ( events.data ) {
-						console.log(events.data);
-						event_id_for_orders = events.data.ID;
-						$("event-footer").attr("eventname", events.data.name);
-						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
-						if(events.data && events.data.images && events.data.images.bodybg && events.data.images.bodybg[0]) {
-							$("main-card").attr("headerimage", events.data.images.bodybg[0]);
-						}
+    		// if eventID is passed in, it should be grabbed here.(Dropdown)
+    		function getSpecificEvent(event_id) {
+    			eventjoy.events(eventID, {}, function(success, events) {
+    				if ( success && events ) {
+    					if ( events.data ) {
+    						console.log(events.data);
+    						event_id_for_orders = events.data.ID;
+    						$("event-footer").attr("eventname", events.data.name);
+    						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
+    						if(events.data && events.data.images && events.data.images.bodybg && events.data.images.bodybg[0]) {
+    							$("main-card").attr("headerimage", events.data.images.bodybg[0]);
+    						}
+    					}
+    				}
+    			});
+    		}
+
+    		function getTicketName(ticket_id, ticketData) {
+				// console.log(ticket_id);
+				// console.log(ticketData);
+				for(var x in ticketData.data) {
+					if(ticket_id == ticketData.data[x].id) {
+						return ticketData.data[x].name;	
 					}
 				}
-			});
-		}
+				return "";
+			}	
 
-		function getTicketName(ticket_id, ticketData) {
-			// console.log(ticket_id);
-			// console.log(ticketData);
-			for(var x in ticketData.data) {
-				if(ticket_id == ticketData.data[x].id) {
-					return ticketData.data[x].name;	
-				}
-			}
-			return "";
-		}
-
-		function getEventOrders(event_id) {
-			eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
-				if ( success && orders ) {
-					window.store.clearOrders();
-					// console.log(orders);
-					orders.data.forEach( function(order) {
-						window.store.addOrder(order);
-					});
-				}
-				window.store.getOrders("prev", 5, "", function( status, orders ) {
-					if(orders.length > 0) {
-						// console.log(orders[0]);
-
-						var discountcode = "NONE";
-						if(orders[0].discount_codes && orders[0].discount_codes.length > 0) {
-							discountcode = orders[0].discount_codes[0];
-						}
-						var promoter = "NONE";
-						if(orders[0].promoter) {
-							promoter = orders[0].promoter;
-						}
-						eventjoy.events_tickets(eventID, {}, function(status, ticketData) {
-							// console.log(ticketData);
-							eventjoy.order_attendees(orders[0].ID, {}, function(status, attendeeData) {
-								var attendees = [];
-								for(x in attendeeData.data) {
-									// console.log(attendeeData.data[x]);
-									var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
-									var attendeeDetail = {
-										"name" : attendeeData.data[x].attendee.name,
-										"ticket_name" : ticketName
-									};
-									attendees.push(attendeeDetail);
-									attendees.push(attendeeDetail);
-									// attendees += attendeeData.data[x].attendee.name + ", ";
-									// console.log(attendeeDetail);
-								}
-								// console.log(attendees);
-								$("main-card").attr("attendeenames", attendees);
-								$("main-card").attr("registrationcount", orders[0].num_of_attendees);
-								$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
-								$("main-card").attr("discountcode", discountcode);
-								$("main-card").attr("promoter", promoter);
-								$("main-card").show();
-							});
+			function getEventOrders(event_id) {
+				eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
+					if ( success && orders ) {
+						window.store.clearOrders();
+						// console.log(orders);
+						orders.data.forEach( function(order) {
+							window.store.addOrder(order);
 						});
+					}
+					window.store.getOrders("prev", 5, "", function( status, orders ) {
+						if(orders.length > 0) {
+							// console.log(orders[0]);
 
-						if(orders.length > 1) {
-							for(var i in orders.slice(1)) {
-								// console.log(orders[i]);
-								discountcode = "NONE";
-								if(orders[i].discount_codes && orders[i].discount_codes.length > 0) {
-									discountcode = orders[i].discount_codes[i];
-								}
-								var promoter = "NONE";
-								if(orders[i].promoter) {
-									promoter = orders[i].promoter;
-								}
-
-								eventjoy.order_attendees(orders[i].ID, {}, function(status, attendeeData) {
-									var attendees = "";
-									for(x in attendeeData.data) {
-										attendees += attendeeData.data[x].attendee.name + ", ";
-									}
-									// console.log(attendeeData);
-									$("#secondary-card-wrapper").append("<secondary-card registrationcount='"+orders[i].num_of_attendees+"' ordertotal='"+orders[i].total.slice(0, -3)+"' attendeenames='"+ attendees.slice(0, -2) +"' discountcode='"+discountcode+"' promoter='"+promoter+"'></secondary-card>");
-								});
+    						var discountcode = "NONE";
+							if(orders[0].discount_codes && orders[0].discount_codes.length > 0) {
+								discountcode = orders[0].discount_codes[0];
 							}
-						}
-					}
-				});
-				window.store.getTotalRevenue(function( status, totalRevenue ) {
-					window.store.getTotalAttendees(function( status, totalAttendees ) {
-						var footer = $("event-footer");
-						footer.attr("revenue", totalRevenue);
-						footer.attr("attendees", totalAttendees);
+							var promoter = "NONE";
+							if(orders[0].promoter) {
+								promoter = orders[0].promoter;
+							}
+							eventjoy.events_tickets(eventID, {}, function(status, ticketData) {
+								// console.log(ticketData);
+								eventjoy.order_attendees(orders[0].ID, {}, function(status, attendeeData) {
+									var attendees = [];
+									for(x in attendeeData.data) {
+										// console.log(attendeeData.data[x]);
+										var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
+										var attendeeDetail = {
+											"name" : attendeeData.data[x].attendee.name,
+											"ticket_name" : ticketName
+										};
+										attendees.push(attendeeDetail);
+										attendees.push(attendeeDetail);
+										// attendees += attendeeData.data[x].attendee.name + ", ";
+										// console.log(attendeeDetail);
+									}
+									// console.log(attendees);
+									$("main-card").attr("attendeenames", attendees);
+									$("main-card").attr("registrationcount", orders[0].num_of_attendees);
+									$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
+									$("main-card").attr("discountcode", discountcode);
+									$("main-card").attr("promoter", promoter);
+									$("main-card").show();
+								});
+							});	
 
-						// console.log("Total Attendees: " + totalAttendees);
-					});
-					// console.log("Total Revenue: " + totalRevenue);
-				});
-			});
-		}
+							if(orders.length > 1) {
+								for(var i in orders.slice(1)) {
+									// console.log(orders[i]);
+									discountcode = "NONE";
+									if(orders[i].discount_codes && orders[i].discount_codes.length > 0) {
+										discountcode = orders[i].discount_codes[i];
+									}
+									var promoter = "NONE";
+									if(orders[i].promoter) {
+										promoter = orders[i].promoter;
+									}
 
-		if(eventID == 0) {
-			eventjoy.events("", {}, function(success, events) {
-				if ( success && events ) {
-					if ( events.data.length && events.data[0].ID ) {
-						eventID = events.data[0].ID;
-						getSpecificEvent(eventID);
-						getEventOrders(eventID);
-					}
-				}
-			});
-		} else {
-			getSpecificEvent(eventID);	
-			getEventOrders(eventID);
-		}
+    								eventjoy.order_attendees(orders[i].ID, {}, function(status, attendeeData) {
+    									var attendees = "";
+    									for(x in attendeeData.data) {
+    										attendees += attendeeData.data[x].attendee.name + ", ";
+    									}
+    									console.log(attendeeData);
+    									$("#secondary-card-wrapper").append("<secondary-card registrationcount='"+orders[i].num_of_attendees+"' ordertotal='"+orders[i].total.slice(0, -3)+"' attendeenames='"+ attendees.slice(0, -2) +"' discountcode='"+discountcode+"' promoter='"+promoter+"'></secondary-card>");
+    								});
+    							}
+    						}
+    					}
+    				});
+    				window.store.getTotalRevenue(function( status, totalRevenue ) {
+    					window.store.getTotalAttendees(function( status, totalAttendees ) {
+    						var footer = $("event-footer");
+    						footer.attr("revenue", totalRevenue);
+    						footer.attr("attendees", totalAttendees);
 
+    						console.log("Total Attendees: " + totalAttendees);
+    					});
+    					console.log("Total Revenue: " + totalRevenue);
+    				});
+    			});
+    		}
 
+    		if(eventID == 0) {
+    			eventjoy.events("", {}, function(success, events) {
+    				if ( success && events ) {
+    					if ( events.data.length && events.data[0].ID ) {
+    						eventID = events.data[0].ID;
+    						getSpecificEvent(eventID);
+    						getEventOrders(eventID);
+    					}
+    				}
+    			});
+    		} else {
+    			getSpecificEvent(eventID);	
+    			getEventOrders(eventID);
+    		}
+      });
+
+      // Start by showing onboarding
+      showOnboarding();
     </script>
   </body>
 </html>
