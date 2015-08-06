@@ -184,7 +184,7 @@
 
     function testAnimation() {
       /*$('#main-card-wrapper').addClass('move-right');*/
-      $('#main-card-wrapper .transition').show().addClass('move-right');
+      $('#main-card-wrapper .transition').show().removeClass('move-off').removeClass('move-in').addClass('move-right');
       $('#secondary-card-wrapper .transition').each( function(idx, elem) {
         setTimeout( function() {
           $(elem).addClass('move-right');
@@ -193,8 +193,13 @@
       });
 
       setTimeout( function() {
+        $('#main-card-wrapper .transition').show().removeClass('move-right').addClass('move-off');
+      }, 650);
+
+      setTimeout( function() {
         // This is where we shuffle the actual DOM elements, and reset the animation
         $('.move-right').removeClass('move-right');
+        $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
       }, 1100);
       return false;
     }

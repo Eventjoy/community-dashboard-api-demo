@@ -86,6 +86,28 @@ body{
 	-ms-transform: rotate(180deg) scale(0.5);
 	transform: rotate(180deg) scale(0.5);
 }*/
+#main-card-wrapper .move-off {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	transition: none;
+	-webkit-transform: translate(0,-201%); /* Safari */
+	-moz-transform: translate(0,-201%); /* FF */
+	-ms-transform: translate(0,-201%); /* IE 9 */
+	transform: translate(0,-201%);
+	opacity:0;
+}
+#main-card-wrapper .move-in {
+	-webkit-transition: all 600ms ease-in-out;
+	-moz-transition: all 600ms ease-in-out;
+	-ms-transition: all 600ms ease-in-out;
+	transition: all 600ms ease-in-out;
+	-webkit-transform: translate(0,0); /* Safari */
+	-moz-transform: translate(0,0); /* FF */
+	-ms-transform: translate(0,0); /* IE 9 */
+	transform: translate(0,0);
+	opacity:1;
+}
 #main-card-wrapper .move-right {
 	-webkit-transition: all 600ms ease-in-out;
 	-moz-transition: all 600ms ease-in-out;
