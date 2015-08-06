@@ -271,6 +271,14 @@
     			eventjoy.events("", {}, function(success, events) {
     				if ( success && events ) {
     					if ( events.data.length && events.data[0].ID ) {
+                // Create event of array and pass it to dropdown
+                var eventArrays = [];
+                events.data.forEach(function(order) {
+                  eventArrays.push({"eventName": order.name, "eventId" : order.ID});
+                });
+
+                $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+
     						eventID = events.data[0].ID;
     						// eventID = 3677709;
     						getSpecificEvent(eventID);
