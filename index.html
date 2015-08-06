@@ -117,10 +117,10 @@
 
     		// if eventID is passed in, it should be grabbed here.(Dropdown)
     		function getSpecificEvent(event_id) {
-    			eventjoy.events(eventID, {}, function(success, events) {
+    			eventjoy.events(event_id, {}, function(success, events) {
     				if ( success && events ) {
     					if ( events.data ) {
-    						console.log(events.data);
+    						// console.log(events.data);
     						event_id_for_orders = events.data.ID;
     						$("event-footer").attr("eventname", events.data.name);
     						$("event-footer").attr("eventdate", moment(events.data.startdate).format('MMMM D, YYYY'));
@@ -143,8 +143,56 @@
 				return "";
 			}	
 
+			function addPrimaryCard(event_id, order, discountcodes, promoter) {
+				console.log("Last order: ");
+				eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
+					// console.log(ticketData);
+					console.log(order.ID);
+					eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
+						console.log(order.ID);
+						var attendees = [];
+						for(x in attendeeData.data) {
+							// console.log(attendeeData.data[x]);
+							var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
+							var attendeeDetail = {
+								"name" : attendeeData.data[x].attendee.name,
+								"ticket_name" : ticketName
+							};
+							attendees.push(attendeeDetail);
+						}
+						// console.log(attendees);
+						$("main-card").attr("attendeenames", JSON.stringify(attendees));
+						$("main-card").attr("registrationcount", order.num_of_attendees);
+						$("main-card").attr("ordertotal", order.total.slice(0, -3));
+						$("main-card").attr("discountcode", discountcode);
+						$("main-card").attr("promoter", promoter);
+						$("main-card").show();
+						localStorage.setItem("lastCompleted", order.completed);
+					});
+				});
+			}
+
+			function addSecondaryCard(order, discountcode, promoter) {
+				var element = $("<secondary-card registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
+				$("#secondary-card-wrapper").append(element);
+				console.log(element);
+				eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
+					console.log(order);
+					var attendees = "";
+					for(x in attendeeData.data) {
+						attendees += attendeeData.data[x].attendee.name + ", ";
+					}
+					element.attr("registrationcount", order.num_of_attendees);
+					element.attr("ordertotal", order.total.slice(0, -3));
+					element.attr("attendeenames", attendees.slice(0, -2));
+					element.attr("discountcode", discountcode);
+					element.attr("promoter", promoter);
+				});	
+			}
+
 			function getEventOrders(event_id) {
-				eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
+				console.log("Get Event Orders...");
+				eventjoy.events_orders(event_id, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
 					if ( success && orders ) {
 						window.store.clearOrders();
 						// console.log(orders);
@@ -153,65 +201,23 @@
 						});
 					}
 					window.store.getOrders("prev", 5, "", function( status, orders ) {
-						if(orders.length > 0) {
-							// console.log(orders[0]);
-
-    						var discountcode = "NONE";
-							if(orders[0].discount_codes && orders[0].discount_codes.length > 0) {
-								discountcode = orders[0].discount_codes[0];
+						for(var i in orders) {
+							var order = orders[i];
+							console.log(order);
+							discountcode = "NONE";
+							if(order.discount_codes && order.discount_codes.length > 0) {
+								discountcode = order.discount_codes[0];
 							}
 							var promoter = "NONE";
-							if(orders[0].promoter) {
-								promoter = orders[0].promoter;
+							if(order.promoter) {
+								promoter = order.promoter;
 							}
-							eventjoy.events_tickets(eventID, {}, function(status, ticketData) {
-								// console.log(ticketData);
-								eventjoy.order_attendees(orders[0].ID, {}, function(status, attendeeData) {
-									var attendees = [];
-									for(x in attendeeData.data) {
-										// console.log(attendeeData.data[x]);
-										var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
-										var attendeeDetail = {
-											"name" : attendeeData.data[x].attendee.name,
-											"ticket_name" : ticketName
-										};
-										attendees.push(attendeeDetail);
-										// attendees += attendeeData.data[x].attendee.name + ", ";
-										// console.log(attendeeDetail);
-									}
-									// console.log(attendees);
-									$("main-card").attr("attendeenames", JSON.stringify(attendees));
-									$("main-card").attr("registrationcount", orders[0].num_of_attendees);
-									$("main-card").attr("ordertotal", orders[0].total.slice(0, -3));
-									$("main-card").attr("discountcode", discountcode);
-									$("main-card").attr("promoter", promoter);
-									$("main-card").show();
-								});
-							});	
-
-							if(orders.length > 1) {
-								for(var i in orders.slice(1)) {
-									// console.log(orders[i]);
-									discountcode = "NONE";
-									if(orders[i].discount_codes && orders[i].discount_codes.length > 0) {
-										discountcode = orders[i].discount_codes[i];
-									}
-									var promoter = "NONE";
-									if(orders[i].promoter) {
-										promoter = orders[i].promoter;
-									}
-
-    								eventjoy.order_attendees(orders[i].ID, {}, function(status, attendeeData) {
-    									var attendees = "";
-    									for(x in attendeeData.data) {
-    										attendees += attendeeData.data[x].attendee.name + ", ";
-    									}
-    									console.log(attendeeData);
-    									$("#secondary-card-wrapper").append("<secondary-card registrationcount='"+orders[i].num_of_attendees+"' ordertotal='"+orders[i].total.slice(0, -3)+"' attendeenames='"+ attendees.slice(0, -2) +"' discountcode='"+discountcode+"' promoter='"+promoter+"'></secondary-card>");
-    								});
-    							}
-    						}
-    					}
+							if(i == 0) {
+								addPrimaryCard(event_id, order, discountcode, promoter);
+							} else {
+								addSecondaryCard(order, discountcode, promoter);
+							}
+						}
     				});
     				window.store.getTotalRevenue(function( status, totalRevenue ) {
     					window.store.getTotalAttendees(function( status, totalAttendees ) {
@@ -219,9 +225,9 @@
     						footer.attr("revenue", totalRevenue);
     						footer.attr("attendees", totalAttendees);
 
-    						console.log("Total Attendees: " + totalAttendees);
+    						// console.log("Total Attendees: " + totalAttendees);
     					});
-    					console.log("Total Revenue: " + totalRevenue);
+    					// console.log("Total Revenue: " + totalRevenue);
     				});
     			});
     		}
@@ -230,7 +236,8 @@
     			eventjoy.events("", {}, function(success, events) {
     				if ( success && events ) {
     					if ( events.data.length && events.data[0].ID ) {
-    						eventID = events.data[0].ID;
+    						// eventID = events.data[0].ID;
+    						eventID = 3677709;
     						getSpecificEvent(eventID);
     						getEventOrders(eventID);
     					}
@@ -240,6 +247,30 @@
     			getSpecificEvent(eventID);	
     			getEventOrders(eventID);
     		}
+   //  		(function poll() {
+			//    setTimeout(function() {
+			//    		console.log("Polling!!!");
+			//    		// Get data from 
+			//    		// console.log(localStorage.getItem("lastCompleted"));
+			//    		// Get last 50 items and add to data
+			//    		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50}, function(success, orders) {
+			// 			if ( success && orders ) {
+			// 				orders.data.forEach( function(order) {
+			// 					console.log(order);
+			// 					window.store.addOrder(order);
+			// 				});
+			// 			}
+			// 		// 	// Get last five since last element
+			// 		// 	window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
+			// 	 //   			console.log(orders);
+			// 		// 		if(orders && orders.length > 0) {
+			// 		// 			console.log("New Item Available");
+			// 		// 		}
+			// 		// 	});
+			// 		});
+			//    		poll();
+			//    }, 30000);
+			// })();
       });
 
       // Start by showing onboarding

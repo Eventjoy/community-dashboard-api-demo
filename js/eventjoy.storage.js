@@ -35,7 +35,7 @@ function initialiseDB() {
 			}
 		};
 		window.store.clearOrders = function( callback ) {
-			console.log("Clear database");
+			// console.log("Clear database");
 			var db = window.store.indexedDB.db;
 			try {
 				var orderObjectStore = db.transaction("order", "readwrite").objectStore("order").clear();
@@ -47,7 +47,7 @@ function initialiseDB() {
 			}
 		}
 		window.store.addOrder = function( order, callback ) {
-			console.log("Add an order to database");
+			// console.log("Add an order to database");
 			var db = window.store.indexedDB.db;
 			try {
 				var orderObjectStore = db.transaction("order", "readwrite").objectStore("order").add(order);
@@ -78,7 +78,6 @@ function initialiseDB() {
 
 		window.store.getOrder = function( order_id, callback ) {
 			var db = window.store.indexedDB.db;
-			console.log( 'Get Order... '+order_id );
 			try {
 				var request = db.transaction("order", "readonly").objectStore("order").get(order_id);
 				request.onsuccess = function(event) {
@@ -102,16 +101,15 @@ function initialiseDB() {
 		window.store.getOrders = function( sort, size, timestamp, callback ) {
 			sort = sort.toLowerCase();
 			if(sort && (sort == "prev" || sort == "next")) {
-				console.log(sort);
+				// console.log(sort);
 			} else {
 				sort = "prev";	
-				console.log("Fixed to prev");
+				// console.log("Fixed to prev");
 			}
 			var db = window.store.indexedDB.db;
-			console.log( 'Get all Orders... ');
 			try {
 				var orders = [];
-				var trans = db.transaction("order", "readonly")
+				var trans = db.transaction("order", "readonly");
 				var request = trans.objectStore("order");
 			    // var cursorRequest = request.openCursor();
 			    var cursorRequest = request.index('completed').openCursor(null, sort);
@@ -123,16 +121,23 @@ function initialiseDB() {
 				var counter = 0;
 				var prev = null;
 				cursorRequest.onsuccess = function(event) {
+					// console.log("Success getting orders");
 					var cursor = event.target.result;
 					if(cursor) {
 						// Current one and one previous one
+						// console.log(cursor.value.completed + ":" + timestamp);
 						if(cursor.value.completed == timestamp && prev) {
 							console.log("Got new one!");
 							orders.push(prev);
 							counter++;
 							orders.push(cursor.value);
 							counter++;
+						} else {
+							if(timestamp) {
+								callback(true, []);
+							}
 						}
+						// console.log(counter + " : " + size);
 						if(counter < size || size == -1) {
 							// Next 4
 							if(!timestamp || cursor.value.completed < timestamp) {
@@ -150,6 +155,11 @@ function initialiseDB() {
 						if(counter == size && callback) { callback(false, orders); counter++; }
 
 						cursor.continue();
+					} else {
+						if(counter < size) {
+							// Ran out of order before size is met.  So return whatever is added.
+							callback(true, orders);
+						}
 					}
 				};
 				cursorRequest.onerror = function(e) {
@@ -157,14 +167,14 @@ function initialiseDB() {
 				};
 			} catch (e) {
 				// Raven.captureException(e);
-				console.log('Get all orders exception... ' + e.message);
+				console.log('Get orders exception... ' + e.message);
 				if (callback) callback(false, null);
 			}
 		}
 
 		window.store.getTotalRevenue = function( callback ) {
 			var db = window.store.indexedDB.db;
-			console.log( 'Get total revenue... ');
+			// console.log( 'Get total revenue... ');
 			try {
 				var revenue = 0;
 				var trans = db.transaction("order", "readonly")
@@ -194,7 +204,7 @@ function initialiseDB() {
 		}
 		window.store.getTotalAttendees = function( callback ) {
 			var db = window.store.indexedDB.db;
-			console.log( 'Get total attendees... ');
+			// console.log( 'Get total attendees... ');
 			try {
 				var totalAttendees = 0;
 				var trans = db.transaction("order", "readonly")
@@ -217,7 +227,7 @@ function initialiseDB() {
 				};
 			} catch (e) {
 				// Raven.captureException(e);
-				console.log('Get total revenue exception... ' + e.message);
+				console.log('Get total attendees exception... ' + e.message);
 				if (callback) callback(false, 0);
 			}
 		}
@@ -362,46 +372,46 @@ function initialiseDB() {
 
 	//////////////////////////////
 	// Database agnostic functions
-	window.store.cacheImage = function( filename, url, userdata, callback ) {
-		var xmlhttp;
-		if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
-			xmlhttp = new XMLHttpRequest();
-		} else { // code for IE6, IE5
-			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState === 4) {
-				if (xmlhttp.status === 200) {
-					if ( xmlhttp.responseText.length > 0 ) {
-						var filedata = "data:image/png;base64," + xmlhttp.responseText;
-						// Moved callback outside of putFile... may as well return the image now we have it, and perform 'put' operation in the background
-						if (callback) callback(true, filename, filedata, userdata);	
-						window.store.putFile(filename, filedata, userdata, function(success, filename, userdata) {
-							//if (callback) callback(success, filename, filedata, userdata);
-						});
-					} else {
-						console.log('window.store.cacheImage: Invalid response for image: '+url);
-						if (callback) callback(false, filename, null, userdata);
-					}
-				} else {
-					console.log('window.store.cacheImage: Non-successful status ('+xmlhttp.status+'): '+url);
-					if (callback) callback(false, filename, null, userdata);
-				}
-			}
-		};  
-		xmlhttp.onerror = function() {
-			console.log('window.store.cacheImage: xmlhttp.onerror: '+url);
-			if (callback) callback(false, filename, null, userdata);
-		};
+	// window.store.cacheImage = function( filename, url, userdata, callback ) {
+	// 	var xmlhttp;
+	// 	if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+	// 		xmlhttp = new XMLHttpRequest();
+	// 	} else { // code for IE6, IE5
+	// 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	// 	}
+	// 	xmlhttp.onreadystatechange = function() {
+	// 		if (xmlhttp.readyState === 4) {
+	// 			if (xmlhttp.status === 200) {
+	// 				if ( xmlhttp.responseText.length > 0 ) {
+	// 					var filedata = "data:image/png;base64," + xmlhttp.responseText;
+	// 					// Moved callback outside of putFile... may as well return the image now we have it, and perform 'put' operation in the background
+	// 					if (callback) callback(true, filename, filedata, userdata);	
+	// 					window.store.putFile(filename, filedata, userdata, function(success, filename, userdata) {
+	// 						//if (callback) callback(success, filename, filedata, userdata);
+	// 					});
+	// 				} else {
+	// 					console.log('window.store.cacheImage: Invalid response for image: '+url);
+	// 					if (callback) callback(false, filename, null, userdata);
+	// 				}
+	// 			} else {
+	// 				console.log('window.store.cacheImage: Non-successful status ('+xmlhttp.status+'): '+url);
+	// 				if (callback) callback(false, filename, null, userdata);
+	// 			}
+	// 		}
+	// 	};  
+	// 	xmlhttp.onerror = function() {
+	// 		console.log('window.store.cacheImage: xmlhttp.onerror: '+url);
+	// 		if (callback) callback(false, filename, null, userdata);
+	// 	};
 
-		xmlhttp.open("GET", 'https://www.eventjoy.com/m/fetch.php?url='+encodeURIComponent(B64.encode(url)) );
-		xmlhttp.timeout = 30000;
-		xmlhttp.ontimeout = function () {
-			console.log('window.store.cacheImage: xmlhttp.ontimeout: '+url);
-			if (callback) callback(false, filename, null, userdata);
-		};
-		xmlhttp.send(null);
-	};
+	// 	xmlhttp.open("GET", 'https://www.eventjoy.com/m/fetch.php?url='+encodeURIComponent(B64.encode(url)) );
+	// 	xmlhttp.timeout = 30000;
+	// 	xmlhttp.ontimeout = function () {
+	// 		console.log('window.store.cacheImage: xmlhttp.ontimeout: '+url);
+	// 		if (callback) callback(false, filename, null, userdata);
+	// 	};
+	// 	xmlhttp.send(null);
+	// };
 
 	window.store.open();
 }
