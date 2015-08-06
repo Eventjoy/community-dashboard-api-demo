@@ -31,27 +31,31 @@
         $('onboarding-view #onboarding-background').removeClass('hiding');
         $('onboarding-view .pages').addClass('hiding');
         $('onboarding-view #onboarding').removeClass('hidden');
-        $('onboarding-view #loading').addClass('hiding');
+        $('onboarding-view #loading').addClass('hiding').removeClass('active');
       }
       function hideOnboarding() {
         $('onboarding-view').addClass('hidden');
         $('onboarding-view').removeClass('showing');
         $('onboarding-view #onboarding').addClass('hidden');
-        $('onboarding-view #loading').addClass('hidden');
+        $('onboarding-view #loading').addClass('hidden').removeClass('active');
       }
       function showLoading() {
         $('onboarding-view #onboarding').addClass('hidden');
-        $('onboarding-view #loading').removeClass('hidden');
+        $('onboarding-view #loading').removeClass('hidden').addClass('active');
 
         //setTimeout( showContent, 4000 );
       }
       function showContent() {
-        $('onboarding-view #onboarding-background').addClass('hiding');
-        $('onboarding-view .pages').addClass('hiding');
-        $('#main-content').removeClass('hidden');
-        setTimeout( function() {
-          hideOnboarding();
-        }, 750);
+        if ( $('onboarding-view #loading').hasClass('active') ) {
+          $('onboarding-view #onboarding-background').addClass('hiding');
+          $('onboarding-view .pages').addClass('hiding');
+          $('#main-content').removeClass('hidden');
+          setTimeout( function() {
+            hideOnboarding();
+          }, 750);
+        } else {
+          setTimeout(showContent, 1000);
+        }
       }
     </script>
   
@@ -172,8 +176,9 @@
 				});
 			}
 
-			function addSecondaryCard(order, discountcode, promoter) {
-				var element = $("<secondary-card registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
+			function addSecondaryCard(idx, order, discountcode, promoter) {
+				var element = $("secondary-card-"+idx);
+        if ( !element.length ) element = $("<secondary-card id='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
 				$("#secondary-card-wrapper").append(element);
 				// console.log(element);
 				eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
@@ -215,7 +220,7 @@
 							if(i == 0) {
 								addPrimaryCard(event_id, order, discountcode, promoter);
 							}
-							addSecondaryCard(order, discountcode, promoter);
+							addSecondaryCard(i, order, discountcode, promoter);
 						}
     				});
     				window.store.getTotalRevenue(function( status, totalRevenue ) {
@@ -251,7 +256,7 @@
   							if(i == 0) {
   								addPrimaryCard(event_id, order, discountcode, promoter);
   							}
-  							addSecondaryCard(order, discountcode, promoter);
+  							addSecondaryCard(i, order, discountcode, promoter);
   						}
   						window.store.getTotalRevenue(function( status, totalRevenue ) {
   	    					window.store.getTotalAttendees(function( status, totalAttendees ) {
@@ -307,10 +312,12 @@
 
           setTimeout( function() {
             // This is where we shuffle the actual DOM elements, and reset the animation
-            $('.move-right').removeClass('move-right');
-            $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
             if ( changeData ) changeData();
-          }, 1100);
+            setTimeout( function() {
+              $('.move-right').removeClass('move-right');
+              $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
+            }, 250);
+          }, 1300);
         });
 
     		(function poll_data_into_database() {
