@@ -43,14 +43,14 @@
         $('onboarding-view #onboarding').addClass('hidden');
         $('onboarding-view #loading').removeClass('hidden');
 
-        setTimeout( showContent, 4000 );
+        //setTimeout( showContent, 4000 );
       }
       function showContent() {
         $('onboarding-view #onboarding-background').addClass('hiding');
         $('onboarding-view .pages').addClass('hiding');
+        $('#main-content').removeClass('hidden');
         setTimeout( function() {
           hideOnboarding();
-          $('#main-content').removeClass('hidden');
         }, 750);
       }
     </script>
@@ -228,6 +228,9 @@
     					});
     					// console.log("Total Revenue: " + totalRevenue);
     				});
+
+            // Once initial data is loaded, hide loading
+            setTimeout( showContent, 1500 );
     			});
     		}
 
