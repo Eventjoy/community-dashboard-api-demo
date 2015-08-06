@@ -162,12 +162,12 @@
 							attendees.push(attendeeDetail);
 						}
 						// console.log(attendees);
-						$("main-card").attr("attendeenames", JSON.stringify(attendees));
-						$("main-card").attr("registrationcount", order.num_of_attendees);
-						$("main-card").attr("ordertotal", order.total.slice(0, -3));
-						$("main-card").attr("discountcode", discountcode);
-						$("main-card").attr("promoter", promoter);
-						$("main-card").show();
+						$("main-card.incoming").attr("attendeenames", JSON.stringify(attendees));
+						$("main-card.incoming").attr("registrationcount", order.num_of_attendees);
+						$("main-card.incoming").attr("ordertotal", order.total.slice(0, -3));
+						$("main-card.incoming").attr("discountcode", discountcode);
+						$("main-card.incoming").attr("promoter", promoter);
+						$("main-card.incoming").show();
 						localStorage.setItem("lastCompleted", order.completed);
 					});
 				});
@@ -192,11 +192,11 @@
 			}
 
 			function getEventOrders(event_id) {
-				console.log("Get Event Orders...");
+				console.log("Get Event Orders for "+event_id+"...");
 				eventjoy.events_orders(event_id, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
 					if ( success && orders ) {
 						window.store.clearOrders();
-						// console.log(orders);
+						console.log(orders);
 						orders.data.forEach( function(order) {
 							window.store.addOrder(order);
 						});
@@ -215,9 +215,8 @@
 							}
 							if(i == 0) {
 								addPrimaryCard(event_id, order, discountcode, promoter);
-							} else {
-								addSecondaryCard(order, discountcode, promoter);
 							}
+							addSecondaryCard(order, discountcode, promoter);
 						}
     				});
     				window.store.getTotalRevenue(function( status, totalRevenue ) {
@@ -237,8 +236,8 @@
     			eventjoy.events("", {}, function(success, events) {
     				if ( success && events ) {
     					if ( events.data.length && events.data[0].ID ) {
-    						// eventID = events.data[0].ID;
-    						eventID = 3677709;
+    						eventID = events.data[0].ID;
+    						//eventID = 3677709;
     						getSpecificEvent(eventID);
     						getEventOrders(eventID);
     					}
