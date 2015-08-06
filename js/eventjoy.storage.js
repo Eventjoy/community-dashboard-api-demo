@@ -52,7 +52,7 @@ function initialiseDB() {
 			try {
 				var orderObjectStore = db.transaction("order", "readwrite").objectStore("order").add(order);
 				orderObjectStore.onsuccess = function(e) { if ( callback ) callback( true, order.ID, order ) };
-				orderObjectStore.onerror = function(e) { if ( callback ) callback( false, order.ID, order ); console.log(e.value); };
+				orderObjectStore.onerror = function(e) { if ( callback ) callback( false, order.ID, order ); /* console.log(e.value); */};
 			} catch (e) {
 				console.log('Add transaction exception... ' + e.message);
 				if (callback) callback(false, order.ID, order);
@@ -67,7 +67,7 @@ function initialiseDB() {
 					"data" : order
 				});
 				request.onsuccess = function(e) { if ( callback ) callback( true, order.ID, order ) };
-				request.onerror = function(e) { if ( callback ) callback( false, order.ID, order ); console.log(e.value); };
+				request.onerror = function(e) { if ( callback ) callback( false, order.ID, order ); console.log(e.value);};
 			} catch (e) {
 				// Raven.captureException(e);
 				// alert('Put transaction exception... ' + e.message);
