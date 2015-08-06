@@ -107,7 +107,7 @@
 </style>
 
 <template>
-  <div class="transparent-padding transition" onclick="testAnimation();return false;">
+  <div class="transparent-padding transition" onclick="newDataTransition(null);return false;">
     <paper-material elevation="2">
       <div class="small-card">
           <div id="card-header">
@@ -182,14 +182,14 @@
       }
     });
 
-    function testAnimation() {
-      /*$('#main-card-wrapper').addClass('move-right');*/
+    /*function testAnimation() {
+      //$('#main-card-wrapper').addClass('move-right');
       $('#main-card-wrapper .transition').show().removeClass('move-off').removeClass('move-in').addClass('move-right');
       $('#secondary-card-wrapper .transition').each( function(idx, elem) {
         setTimeout( function() {
           $(elem).addClass('move-right');
         }, 100 * ($('.transition').length-idx));
-        /*}, 20 * idx);*/
+        //}, 20 * idx);
       });
 
       setTimeout( function() {
@@ -202,7 +202,7 @@
         $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
       }, 1100);
       return false;
-    }
+    }*/
   </script>
 
 </dom-module>
