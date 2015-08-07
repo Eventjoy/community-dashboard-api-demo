@@ -74,6 +74,18 @@
       return;
     }
 
+    function initialiseMusicThemes() {
+      var eventArrays = [];
+      eventArrays.push({"theme_name": "Animals", "theme_value" : "animals"});
+      eventArrays.push({"theme_name": "Audience", "theme_value" : "audience"});
+      eventArrays.push({"theme_name": "Celebration", "theme_value" : "celebration"});
+      eventArrays.push({"theme_name": "Jurassic Park", "theme_value" : "jurassic_park"});
+      eventArrays.push({"theme_name": "Loud Sounds", "theme_value" : "loud_sounds"});
+      eventArrays.push({"theme_name": "Star Wars", "theme_value" : "star_wars"});
+
+      localStorage.setItem("music_theme_list", JSON.stringify(eventArrays));
+    }
+
       eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
       //localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')  ;
 
@@ -199,6 +211,8 @@
 
       $(document).ready(function() {
     			
+        initialiseMusicThemes();
+
     		initialiseDB();
 
     		// if eventID is passed in, it should be grabbed here.(Dropdown)
@@ -363,7 +377,7 @@
               var numOfMusic = localStorage.getItem("num_of_theme_music");
               if(!themeName) themeName = "jurassic_park"; 
               if(!numOfMusic) numOfMusic = 12; 
-              
+
               playRandomMusic(themeName, 1, numOfMusic);
 
               // Complete animation
