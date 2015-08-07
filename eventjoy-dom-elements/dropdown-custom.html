@@ -10,6 +10,8 @@
       border-radius: 2px 2px 2px 2px;
       -moz-border-radius: 2px 2px 2px 2px;
       -webkit-border-radius: 2px 2px 2px 2px;
+      padding:0 20px;
+      overflow:visible;
     }
     paper-material{
       background-color: #FFFFFF;
@@ -53,17 +55,15 @@
 <template>
     <paper-button flat class="dropdown-button-flat" on-click="showIronDropdown">{{displayText}}<span style="display:none">{{displayValue}}</span></paper-button>
     <iron-dropdown id="list" horizontal-align="center" vertical-align="top">
-        <div class="dropdown-content">
-          <paper-material elevation="8" >
-            <ul id="item-list">
-            <template is="dom-repeat" items="{{anArray}}">
-                <li>
-                    <span><a id="clicked" on-click="handleEvent">{{item.eventName}}</a><span style="display:none">{{item.eventId}}</span><span>
-                </li>
-            </template>
-          </ul>
-        </paper-material>
-        </div>
+      <paper-material elevation="4" class="dropdown-content">
+        <ul id="item-list">
+          <template is="dom-repeat" items="{{anArray}}">
+              <li>
+                  <span><a id="clicked" on-click="handleEvent">{{item.eventName}}</a><span style="display:none">{{item.eventId}}</span><span>
+              </li>
+          </template>
+        </ul>
+      </paper-material>
     </iron-dropdown>
 </template>
 
