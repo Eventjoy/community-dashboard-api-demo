@@ -253,85 +253,52 @@
 				});	
 			}
 
-			function getEventOrders(event_id, pageSize) {
-				// console.log("Get Event Orders for "+event_id+"...");
-				eventjoy.events_orders(event_id, {"page[number]": 1, "page[size]" : pageSize, "sort": "-completed"}, function(success, orders) {
-					if ( success && orders ) {
-						window.store.clearOrders();
-						// console.log(orders);
+
+      function reloadPageWithNewOrder(event_id) {
+        window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
+          if(orders && orders.length > 0) {
+            for(var i in orders) {
+              var order = orders[i];
+              discountcode = "NONE";
+              if(order.discount_codes && order.discount_codes.length > 0) { discountcode = order.discount_codes[0]; }
+              var promoter = "NONE";
+              if(order.promoter) { promoter = order.promoter; }
+              if(i == 0) { addPrimaryCard(event_id, order, discountcode, promoter); }
+              addSecondaryCard(i, order, discountcode, promoter);
+            }
+            window.store.getTotalRevenue(function( status, totalRevenue ) {
+              window.store.getTotalAttendees(function( status, totalAttendees ) {
+                var footer = $("event-footer");
+                footer.attr("revenue", totalRevenue);
+                footer.attr("attendees", totalAttendees);
+              });
+            });
+          }
+
+          // Once initial data is loaded, hide loading
+          setTimeout( showContent, 1500 );
+        });
+      }
+
+			function getEventOrders(event_id, pageIndex, pageSize, recurse, complete, itemAdded) {
+        console.log('getEventOrders('+event_id+', '+pageIndex+', '+pageSize+', '+recurse+')');
+				eventjoy.events_orders(event_id, {"page[number]": pageIndex, "page[size]" : pageSize, "sort": "-completed"}, function(success, orders) {
+          console.log('orders.data length: '+orders.data.length);
+					if ( success && orders && orders.data && orders.data.length ) {
+            if ( !recurse ) window.store.clearOrders();
 						orders.data.forEach( function(order) {
-							window.store.addOrder(order);
-						});
-					}
-					window.store.getOrders("prev", 5, "", function( status, orders ) {
-						for(var i in orders) {
-							var order = orders[i];
-							// console.log(order);
-							discountcode = "NONE";
-							if(order.discount_codes && order.discount_codes.length > 0) {
-								discountcode = order.discount_codes[0];
-							}
-							var promoter = "NONE";
-							if(order.promoter) {
-								promoter = order.promoter;
-							}
-							if(i == 0) {
-								addPrimaryCard(event_id, order, discountcode, promoter);
-							}
-							addSecondaryCard(i, order, discountcode, promoter);
-						}
-    				});
-    				window.store.getTotalRevenue(function( status, totalRevenue ) {
-    					window.store.getTotalAttendees(function( status, totalAttendees ) {
-    						var footer = $("event-footer");
-    						footer.attr("revenue", totalRevenue);
-    						footer.attr("attendees", totalAttendees);
-
-    						// console.log("Total Attendees: " + totalAttendees);
-    					});
-    					// console.log("Total Revenue: " + totalRevenue);
-    				});
-
-            // Once initial data is loaded, hide loading
-            setTimeout( showContent, 1500 );
-    			});
-    		}
-
-    		function reloadPageWithNewOrder(event_id) {
-  				window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
-  					if(orders && orders.length > 0) {
-  						for(var i in orders) {
-  							var order = orders[i];
-  							// console.log(order);
-  							discountcode = "NONE";
-  							if(order.discount_codes && order.discount_codes.length > 0) {
-  								discountcode = order.discount_codes[0];
-  							}
-  							var promoter = "NONE";
-  							if(order.promoter) {
-  								promoter = order.promoter;
-  							}
-  							if(i == 0) {
-  								addPrimaryCard(event_id, order, discountcode, promoter);
-  							}
-  							addSecondaryCard(i, order, discountcode, promoter);
-  						}
-  						window.store.getTotalRevenue(function( status, totalRevenue ) {
-  	    					window.store.getTotalAttendees(function( status, totalAttendees ) {
-  	    						var footer = $("event-footer");
-  	    						footer.attr("revenue", totalRevenue);
-  	    						footer.attr("attendees", totalAttendees);
-
-  	    						// console.log("Total Attendees: " + totalAttendees);
-  	    					});
-  	    					// console.log("Total Revenue: " + totalRevenue);
-  	    				});
-  					}
-
-            // Once initial data is loaded, hide loading
-            setTimeout( showContent, 1500 );
-  				});
-    		}
+              window.store.addOrder(order, function(success, order_id, order) {
+                if ( itemAdded ) itemAdded(success);
+              });
+            });
+            if ( recurse ) getEventOrders(event_id, pageIndex+1, pageSize, recurse, complete, itemAdded);
+					} else { if ( complete ) complete(); console.log('getEventOrders done!'); }
+          if ( !recurse ) {
+            reloadPageWithNewOrder(event_id);
+            if ( complete ) complete();
+          }
+    		});
+    	}
 
         window.newDataTransition = (function newDataTransition(changeData) {
           // Begin animation. Slide out main card, and shuffle secondary cards
@@ -371,46 +338,42 @@
     		window.poll_data_into_database = (function poll_data_into_database(eventID, animate) {
 		   		console.log("Polling for DB!!!");
           clearTimeout( pollTimeout );
-		   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50, "sort": "-completed"}, function(success, orders) {
-  		   		console.log(orders);
-  					if ( success && orders ) {
-  						orders.data.forEach( function(order) {
-  							// console.log(order);
-  							window.store.addOrder(order, function(success, order_id, order) {
-  								if(success) {
-  									console.log("Got new data :)");
-  									//reloadPageWithNewOrder(eventID);
+          var processedNew = false;
+          getEventOrders(eventID, 1, 50, true, null, function(success) {
+            if ( !processedNew ) {
+              processedNew = true;
+              if ( success ) {
+                console.log("Got new data :)");
 
-                    // Animate the new data in
-                    if ( animate ) {
-                      newDataTransition( function() {
-                        reloadPageWithNewOrder(eventID);
-                      });
-                    } else {
-                      reloadPageWithNewOrder(eventID);
-                    }
+                // Animate the new data in
+                if ( animate ) {
+                  newDataTransition( function() {
+                    reloadPageWithNewOrder(eventID);
+                  });
+                } else {
+                  reloadPageWithNewOrder(eventID);
+                }
+              } else {
+                // TODO: Get the latest in DB and compare completed against current one.
+                // If multiple orders came in, current logic will not advance.
+                console.log("No New Data :(");
+              }
 
-  								} else {
-  									// TODO: Get the latest in DB and compare completed against current one.
-  									// If multiple orders came in, current logic will not advance.
-  									console.log("No New Data :(");
-  								}
-  							});
-  						});
-  					}
-
-            pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
-					});
+              pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
+            }
+          });
 			 });
 
         window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
           $('secondary-card').remove();
+          localStorage.setItem("lastCompleted", "");
 
           getSpecificEvent(eventID);  
-          getEventOrders(eventID, 5);
-          getEventOrders(eventID, -1);
+          getEventOrders(eventID, 1, 5, false, function() {
+            //getEventOrders(eventID, 1, 50, true, null);
 
-          poll_data_into_database(eventID, false);
+            poll_data_into_database(eventID, false);
+          }, null);
         });
 
       });
