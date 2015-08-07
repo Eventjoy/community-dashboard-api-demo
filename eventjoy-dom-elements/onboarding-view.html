@@ -143,12 +143,11 @@ paper-material{
 
     function onEventSelected(){
 
-        showLoading();
-
         var eventId = document.getElementsByTagName("dropdown-custom")[0]
                       .getElementsByTagName("paper-material")[0]
                       .getElementsByTagName("span")[0].innerText;
-        if ( eventId ) {
+        if ( parseInt(eventId,10) ) {
+          showLoading();
           console.log(eventId);
           setEventID(eventId);
         }
