@@ -65,12 +65,13 @@ body{
 .ripple-background {
 	position:fixed;
 	background-color:#c29eff;
-	left:50%;width:100px;
-	top:-100px;height:100px;
+	right:6px;width:100px;
+	bottom:6px;height:100px;
 	border-radius:50px;
 	margin-left:-50px;
-	z-index:75;
+	z-index:125;
 	opacity:0;
+	pointer-events:none;
 }
 .ripple-background.activate {
 	-webkit-transition: -webkit-transform 600ms ease-in-out;
@@ -84,10 +85,10 @@ body{
 	opacity:0.75;
 }
 .ripple-background.deactivate {
-	-webkit-transition: all 600ms ease-in-out;
-	-moz-transition: all 600ms ease-in-out;
-	-ms-transition: all 600ms ease-in-out;
-	transition: all 600ms ease-in-out;
+	-webkit-transition: all 250ms ease-in-out;
+	-moz-transition: all 250ms ease-in-out;
+	-ms-transition: all 250ms ease-in-out;
+	transition: all 250ms ease-in-out;
 	-webkit-transform: scale(50,50);
 	-moz-transform: scale(50,50);
 	-ms-transform: scale(50,50);
