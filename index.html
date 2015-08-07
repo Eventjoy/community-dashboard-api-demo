@@ -83,12 +83,15 @@
       var showing = false;
       function showSettings(){
         if(!showing){
-          $('settings-view').removeClass('hidden');
-          $('settings-view').addClass('showing');
+          window.showRipple(function() {
+            $('settings-view').removeClass('hidden');
+            $('settings-view').addClass('showing');
+          });
           showing = true;
         }else{
           $('settings-view').removeClass('showing');
           $('settings-view').addClass('hidden');
+          window.hideRipple();
           showing = false;
         }
       }
@@ -239,8 +242,8 @@
 				var element = $(".secondary-card-"+idx);
         if ( !element.length ) {
           element = $("<secondary-card class='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
-				  $("#secondary-card-wrapper").append(element);
-        }
+        } else { element.detach(); }
+        $("#secondary-card-wrapper").append(element);
 				// console.log(element);
 				// console.log(order);
 				var attendees = "";
@@ -316,8 +319,8 @@
       });
 
       window.hideRipple = (function hideRipple() {
-        setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
-        setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
+        setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 10);
+        setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 250);
       });
 
         window.newDataTransition = (function newDataTransition(changeData) {
