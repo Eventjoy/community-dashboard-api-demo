@@ -37,7 +37,7 @@
     text-transform: uppercase;
   }
 
-  .float-left{float:left; clear:right; }
+  .float-left{float:left; clear:right; display:table-cell; vertical-align:middle; }
   .float-right{float:right; }
   #card-header{
     background-color: #FF4081;
@@ -47,7 +47,7 @@
     -moz-border-radius-topright: 2px;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
-    height:25%;
+    height:33%;
   }
 
   p {
@@ -55,9 +55,10 @@
   }
   .content-area{
     height:50%;
-    padding:8% 8%;
+    padding:8% 8% 2%;
     overflow:hidden;
-
+    font-size: 1.75vh;
+    line-height: 4vh;
   }
   .center{
     text-align: center;
@@ -79,13 +80,15 @@
   }
 
   .card-content-title{
-    font-size: 12px; 
+    font-size: 1.5vh;
+    line-height: 2.5vh;
     font-weight: 500;
     color: rgba(0,0,0,.87);
   }
 
   .card-content-text{
-    font-size: 12px; 
+    font-size: 1.5vh;
+    line-height: 2.5vh;
     font-weight: 500;
     color: rgba(0,0,0,.54);
   }
@@ -93,22 +96,24 @@
   .fixed-bottom-title{
     font-size: 10px; 
     font-weight: 500;
-    height:50%;
+    height:66%;
     color: rgba(255,255,255,.87);
   }
 
   .metric-title{
-    display:inline-block;
-    padding:8% 8% 0;
-    font-size: 10px; 
+    display:block;
+    padding:0 8%;
+    font-size: 1.75vh;
+    line-height: 4vh;
     font-weight: 500;
     color: rgba(255,255,255,.87);
   }
 
   .metric-description{
-    display:inline-block;
+    display:block;
     padding:0% 8%;
-    font-size: 22px;
+    font-size: 3vh;
+    line-height: 4vh;
     font-weight: 400;
     color: rgba(255,255,255,1);
   }
@@ -122,12 +127,12 @@
           <div id="card-header">
             <div>
               <div class="float-left center fix-six max-six">
-                <span class="metric-title">ATTENDEES</span></br>
-                <span class="metric-description">{{registrationcount}}</span>
+                <div class="metric-title">ATTENDEES</div>
+                <div class="metric-description">{{registrationcount}}</div>
               </div>
               <div class="float-right center fix-six max-six">
-                <span class="metric-title">REVENUE</span></br>
-                <span class="metric-description">{{ordertotal}}</span>
+                <div class="metric-title">REVENUE</div>
+                <div class="metric-description">{{ordertotal}}</div>
               </div>
             </div>
           </div>
@@ -138,12 +143,12 @@
             <div class="fixed-bottom">
               <div class="padded-wrapper">
                 <div class="float-left fix-six max-six">
-                  <span class="card-content-title">DISCOUNT CODE</span></br>
-                  <span class="card-content-text">{{discountcode}}</span>
+                  <div class="card-content-title">DISCOUNT CODE</div>
+                  <div class="card-content-text">{{discountcode}}</div>
                 </div>
                 <div class="float-right fix-six max-six">
-                  <span class="card-content-title">PROMOTER</span></br>
-                  <span class="card-content-text">{{promoter}}</span>
+                  <div class="card-content-title">PROMOTER</div>
+                  <div class="card-content-text">{{promoter}}</div>
                 </div>
               </div>
             </div>
