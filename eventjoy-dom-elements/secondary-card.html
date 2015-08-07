@@ -107,7 +107,7 @@
 </style>
 
 <template>
-  <div class="transparent-padding transition" onclick="newDataTransition(null);return false;">
+  <div class="transparent-padding transition" onclick="newDataTransition( function(done) { done(); } );return false;">
     <paper-material elevation="2">
       <div class="small-card">
           <div id="card-header">
