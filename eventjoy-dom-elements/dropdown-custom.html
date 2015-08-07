@@ -10,15 +10,14 @@
       border-radius: 2px 2px 2px 2px;
       -moz-border-radius: 2px 2px 2px 2px;
       -webkit-border-radius: 2px 2px 2px 2px;
-      top: 48px;
-      position: relative;
     }
     paper-material{
-      color: #FFFFFF;
+      background-color: #FFFFFF;
+      padding: 8px;
     }
     .paper{
       background-color: #FFFFFF;
-      margin: 16px;
+      padding: 8px;
     }
     #item-list{
       display:  block;
@@ -26,16 +25,18 @@
     }
     span{
       color: rgba(0,0,0,.87);
-      padding:4px;
+      
     }
     ul{
       padding: 0;
     }
     #item-list li{
-      padding: 4px;
+      text-align: left;
+      padding: 8px;
       border-bottom: 1px solid #D1D1D1;
     }
     #item-list li a{
+      display:block;
       text-decoration: none;
       font-size: 16px;
     }
@@ -43,17 +44,17 @@
       color: rgba(0,0,0,.87);
       margin: 16px;
     }
-    .hidden{
-      visibility: hidden;
+    #list{
+      margin-bottom: 20px;
     }
   </style>
 
 <!-- Template Displays a paper-button and paper-material with an embedded iron-dropdown -->
 <template>
     <paper-button flat class="dropdown-button-flat" on-click="showIronDropdown">{{displayText}}<span style="display:none">{{displayValue}}</span></paper-button>
-    <iron-dropdown id="list" vertical-align="top">
+    <iron-dropdown id="list" horizontal-align="center" vertical-align="top">
         <div class="dropdown-content">
-          <paper-material elevation="2" class="paper">
+          <paper-material elevation="8" >
             <ul id="item-list">
             <template is="dom-repeat" items="{{anArray}}">
                 <li>
