@@ -178,8 +178,10 @@
 
 			function addSecondaryCard(idx, order, discountcode, promoter) {
 				var element = $("secondary-card-"+idx);
-        if ( !element.length ) element = $("<secondary-card id='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
-				$("#secondary-card-wrapper").append(element);
+        if ( !element.length ) {
+          element = $("<secondary-card id='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
+				  $("#secondary-card-wrapper").append(element);
+        }
 				// console.log(element);
 				eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
 					// console.log(order);
