@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="dropdown-custom-settings.html">
+<link rel="import" href="dropdown-custom-sounds.html">
       
 <dom-module id="settings-view">
 
@@ -101,7 +102,7 @@ p, h2 {
             <p><b>Sounds for when a new ticket is sold</b></p>
           </div>
           <div class="settings-value">
-            <dropdown-custom-settings an-array-settings="{{eventArraySettings}}" current-event="{{selectedEvent}}"></dropdown-custom-settings>
+            <dropdown-custom-sounds an-array-sounds="{{eventArraySounds}}" current-sound="{{selectedSound}}"></dropdown-custom-sounds>
           </div>
           <div class="settings-title">
             <p><b>Eventjoy Event</b></p>
@@ -111,7 +112,7 @@ p, h2 {
           </div>
           <div class="settings-confirm">
             <paper-button class="settings-button" on-click="cancelView" flat>Cancel</paper-button>
-            <paper-button class="settings-button color-button" raised>Accept</paper-button>
+            <paper-button class="settings-button color-button" on-click="confirmSelection" raised>Accept</paper-button>
           </div>
         </div>
         </paper-material>
@@ -129,9 +130,24 @@ p, h2 {
         // declare properties for the element's public API
         soundThemesArray: Array,
         eventArraySettings: Array,
-        selectedEvent: String
+        selectedEvent: String,
+        selectedSound: String
       },
       cancelView: function(e){
+        showSettings();
+      },
+      confirmSelection: function(e){
+
+        var soundId = document.getElementsByTagName("dropdown-custom-sounds")[0]
+                      .getElementsByTagName("paper-material")[0]
+                      .getElementsByTagName("span")[0].innerText;
+
+        var eventId = document.getElementsByTagName("dropdown-custom-settings")[0]
+                      .getElementsByTagName("paper-material")[0]
+                      .getElementsByTagName("span")[0].innerText;
+
+        settingsChanged(eventId, soundId);
+
         showSettings();
       }
     });

@@ -142,6 +142,7 @@
 
                   $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
                   $('settings-view').attr("event-array-settings", JSON.stringify(eventArrays));
+                  $('dropdown-custom-sounds').attr("an-array-sounds", JSON.stringify(eventArrays));
                 }
               }
             });
@@ -185,6 +186,10 @@
       function setEventID(ID){
           $('settings-view').attr("selected-event", ID);
           window.beginProcessingEvent(ID);
+      }
+
+      function settingsChanged(ID, soundPackID){
+        console.log("Event Id "+ ID + " sound pack id "+ soundPackID);
       }
 
       function showLoading() {
