@@ -339,12 +339,12 @@
           $('#secondary-card-wrapper .transition').each( function(idx, elem) {
             setTimeout( function() {
               $(elem).addClass('move-right');
-            }, 100 * ($('.transition').length-idx));
+            }, 100 * ($('.transition').length-1-idx));
           });
 
           setTimeout( function() {
             $('#main-card-wrapper .transition').show().removeClass('move-right').addClass('move-off');
-          }, 650);
+          }, 300);
 
           // Wait for shuffle to complete, then apply new data
           $('.ripple-background').removeClass('activate').removeClass('deactivate');
@@ -361,50 +361,57 @@
               $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
 
               // Fade away ripple, then reset
-              setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 750);
-              setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 1350);
+              setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
+              setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
             }, 250);
-          }, 1300);
+          }, 800);
         });
 
-    		window.poll_data_into_database = (function poll_data_into_database(eventID) {
-			   setTimeout(function() {
-			   		console.log("Polling for DB!!!");
-			   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50, "sort": "-completed"}, function(success, orders) {
-			   			console.log(orders);
-						if ( success && orders ) {
-							orders.data.forEach( function(order) {
-								// console.log(order);
-								window.store.addOrder(order, function(success, order_id, order) {
-									if(success) {
-										console.log("Got new data :)");
-										//reloadPageWithNewOrder(eventID);
+        var pollTimeout = null;
+    		window.poll_data_into_database = (function poll_data_into_database(eventID, animate) {
+		   		console.log("Polling for DB!!!");
+          clearTimeout( pollTimeout );
+		   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50, "sort": "-completed"}, function(success, orders) {
+  		   		console.log(orders);
+  					if ( success && orders ) {
+  						orders.data.forEach( function(order) {
+  							// console.log(order);
+  							window.store.addOrder(order, function(success, order_id, order) {
+  								if(success) {
+  									console.log("Got new data :)");
+  									//reloadPageWithNewOrder(eventID);
 
                     // Animate the new data in
-                    newDataTransition( function() {
+                    if ( animate ) {
+                      newDataTransition( function() {
+                        reloadPageWithNewOrder(eventID);
+                      });
+                    } else {
                       reloadPageWithNewOrder(eventID);
-                    });
+                    }
 
-									} else {
-										// TODO: Get the latest in DB and compare completed against current one.
-										// If multiple orders came in, current logic will not advance.
-										console.log("No New Data :(");
-									}
-								});
-							});
-						}
+  								} else {
+  									// TODO: Get the latest in DB and compare completed against current one.
+  									// If multiple orders came in, current logic will not advance.
+  									console.log("No New Data :(");
+  								}
+  							});
+  						});
+  					}
+
+            pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
 					});
-			   		window.poll_data_into_database(eventID);
-			   }, 10000);
 			 });
 
-      window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
-        getSpecificEvent(eventID);  
-        getEventOrders(eventID, 5);
-        getEventOrders(eventID, -1);
+        window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
+          $('secondary-card').remove();
 
-        poll_data_into_database(eventID);
-      });
+          getSpecificEvent(eventID);  
+          getEventOrders(eventID, 5);
+          getEventOrders(eventID, -1);
+
+          poll_data_into_database(eventID, false);
+        });
 
       });
     </script>
