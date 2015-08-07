@@ -24,19 +24,21 @@
     float:left;
   }
   .name{
-      font-size: 18px;
+      font-size: 2vh;
+      line-height: 2.5vh;
       color: rgba(0,0,0,.87);
   }
   .ticket{
-      font-size: 14px;
+      font-size: 1.5vh;
+      line-height: 2vh;
       color: rgba(0,0,0,.54);
   }
 </style>
 
 <template>
   <div id="ticket-description-wrapper">
-    <span class="name">{{attendeename}}</span></br>
-    <span class="ticket">{{tickettype}}</span>
+    <div class="name">{{attendeename}}</div>
+    <div class="ticket">{{tickettype}}</div>
   </div>
 </template>
 

@@ -25,7 +25,7 @@
 
   .left-column{
     position:absolute;
-    left: 0;width:320px;
+    left: 0;width:33%;
     top:0;bottom:0;
     background-color:#FFFFFF;
     max-height:100%;
@@ -40,7 +40,7 @@
   }
   .header-image{
     position:absolute;
-    left: 320px;right:0;
+    left: 33%;right:0;
     top:0;bottom:0;
     overflow:hidden;
   }
@@ -78,7 +78,8 @@
     position:relative;
   }
   .main-card-title{
-    font-size: 14px; 
+    font-size: 1.5vh;
+    line-height: 2vh;
     font-weight: 700;
     color: rgba(0,0,0,.87);
   }
@@ -86,11 +87,13 @@
   .metric{
     color: #FF4081;
     font-weight: 500;
-    font-size:36px;
+    font-size: 4vh;
+    line-height: 5vh;
   }
 
   .metric-description{
-    font-size: 14px; 
+    font-size: 1.5vh;
+    line-height: 2vh;
     font-weight: 500;
     color: rgba(0,0,0,.54);
   }
@@ -105,23 +108,23 @@
         <div class="left-column">
           <div id="card-header">
               <div class="float-left center fix-six max-six">
-                <span class="main-card-title">ATTENDEES</span></br>
-                <span class="metric">{{registrationcount}}</span>
+                <div class="main-card-title">ATTENDEES</div>
+                <div class="metric">{{registrationcount}}</div>
               </div>
               
               <div class="float-right center fix-six max-six">
-                <span class="main-card-title">REVENUE</span></br>
-                <span class="metric">{{ordertotal}}</span>
+                <div class="main-card-title">REVENUE</div>
+                <div class="metric">{{ordertotal}}</div>
               </div>
           </div>
           <div id="secondary-info">
               <div class="float-left center fix-six max-six">
-                <span class="main-card-title">DISCOUNT CODE</span></br>
-                <span class="metric-description">{{discountcode}}</span>
+                <div class="main-card-title">DISCOUNT CODE</div>
+                <div class="metric-description">{{discountcode}}</div>
               </div>
               <div class="float-right center fix-six max-six">
-                <span class="main-card-title">PROMOTER</span></br>
-                <span class="metric-description">{{promoter}}</span>
+                <div class="main-card-title">PROMOTER</div>
+                <div class="metric-description">{{promoter}}</div>
               </div>
           </div>
           <div id="registration-wrapper">

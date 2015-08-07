@@ -34,6 +34,8 @@ body{
 	margin: 1% auto;
 	width:80%;
 	height:1.5%;
+    font-size: 2vh;
+    line-height: 3vh;
 }
 
 #secondary-card-wrapper{
@@ -64,7 +66,7 @@ body{
 
 .ripple-background {
 	position:fixed;
-	background-color:#c29eff;
+	background-color:#673AB7;
 	right:6px;width:100px;
 	bottom:6px;height:100px;
 	border-radius:50px;
