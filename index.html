@@ -96,7 +96,23 @@
         isAuthorized( function( authorized ) {
           $('onboarding-view #starting').addClass('hidden');
           if ( authorized ) {
+            $('onboarding-view #authenticate').addClass('hidden');
             $('onboarding-view #onboarding').removeClass('hidden');
+
+            // Once authorized, fetch all available events
+            eventjoy.events("", {}, function(success, events) {
+              if ( success && events ) {
+                if ( events.data.length && events.data[0].ID ) {
+                  // Create event of array and pass it to dropdown
+                  var eventArrays = [];
+                  events.data.forEach(function(order) {
+                    eventArrays.push({"eventName": order.name, "eventId" : order.ID});
+                  });
+
+                  $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+                }
+              }
+            });
           } else {
             $('onboarding-view #authenticate').removeClass('hidden');
             /*console.log('triggering login');
@@ -134,14 +150,12 @@
       }
 
       function setEventID(ID){
-          alert(ID);
+          window.beginProcessingEvent(ID);
       }
 
       function showLoading() {
         $('onboarding-view #onboarding').addClass('hidden');
         $('onboarding-view #loading').removeClass('hidden').addClass('active');
-
-        beginProcessingEvent();
       }
       var contentTimeout = null;
       function showContent() {
@@ -161,8 +175,6 @@
       $(document).ready(function() {
     			
     		initialiseDB();
-
-    		var eventID = 0;
 
     		// if eventID is passed in, it should be grabbed here.(Dropdown)
     		function getSpecificEvent(event_id) {
@@ -355,7 +367,7 @@
           }, 1300);
         });
 
-    		(function poll_data_into_database() {
+    		window.poll_data_into_database = (function poll_data_into_database(eventID) {
 			   setTimeout(function() {
 			   		console.log("Polling for DB!!!");
 			   		eventjoy.events_orders(eventID, {"page[number]": 1, "page[size]" : 50, "sort": "-completed"}, function(success, orders) {
@@ -382,55 +394,18 @@
 							});
 						}
 					});
-			   		poll_data_into_database();
+			   		window.poll_data_into_database(eventID);
 			   }, 10000);
 			 });
 
-      function beginProcessingEvent() {
-        if(eventID == 0) {
-          eventjoy.events("", {}, function(success, events) {
-            if ( success && events ) {
-              if ( events.data.length && events.data[0].ID ) {
-                // Create event of array and pass it to dropdown
-                var eventArrays = [];
-                events.data.forEach(function(order) {
-                  eventArrays.push({"eventName": order.name, "eventId" : order.ID});
-                });
+      window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
+        getSpecificEvent(eventID);  
+        getEventOrders(eventID, 5);
+        getEventOrders(eventID, -1);
 
-                $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+        poll_data_into_database(eventID);
+      });
 
-                eventID = events.data[0].ID;
-                // eventID = 3677709;
-                getSpecificEvent(eventID);
-                getEventOrders(eventID, 5);
-                getEventOrders(eventID, -1);
-              }
-            }
-          });
-        } else {
-          getSpecificEvent(eventID);  
-          getEventOrders(eventID, 5);
-          getEventOrders(eventID, -1);
-        }
-
-        poll_data_into_database();
-      }
-			// (function poll_data_into_page() {
-			//    setTimeout(function() {
-			//    		console.log("Polling for page")
-			// 		// Get last five since last element
-			// 		window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
-			//    			console.log(orders);
-			// 			if(orders && orders.length > 0) {
-			// 				console.log("New Item Available");
-			// 			}
-			// 		});
-			//    		poll_data_into_page();
-			//    }, 30000);
-			// })();
-
-        // Start by showing onboarding
-        //showOnboarding();
       });
     </script>
   </body>

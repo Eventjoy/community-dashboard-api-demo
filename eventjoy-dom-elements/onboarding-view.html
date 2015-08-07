@@ -142,7 +142,9 @@ paper-material{
         eventArray: Array
       },
       ready: function() {
-        showOnboarding();
+        setTimeout( function() {
+          showOnboarding();
+        }, 50);
       }
     });
 
