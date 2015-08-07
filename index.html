@@ -340,6 +340,10 @@
                   showContent();
                 });
               }
+            } else {
+              // If no cards are added, show content so we can display empty state
+              console.log('Showing content...');
+              showContent();
             }
 
             if ( done ) done();
