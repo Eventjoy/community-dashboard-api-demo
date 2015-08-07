@@ -266,7 +266,7 @@
 				$("main-card.incoming").attr("discountcode", discountcode);
 				$("main-card.incoming").attr("promoter", promoter);
 				$("main-card.incoming").show();
-				localStorage.setItem("lastCompleted", order.completed);
+				localStorage.setItem("last_completed", order.completed);
 			}
 
 			function addSecondaryCard(idx, ticketData, attendeeData, order, discountcode, promoter) {
@@ -303,7 +303,7 @@
 
       function reloadPageWithNewOrder(event_id, done) {
         eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
-          window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
+          window.store.getOrders("prev", 5, localStorage.getItem("last_completed"), function( status, orders ) {
             if(orders && orders.length > 0) {
               for(var i in orders) {
                 addOrderCards(i, event_id, ticketData, orders[i], function() {
@@ -326,7 +326,7 @@
 					if ( success && orders && orders.data && orders.data.length ) {
             orders.data.forEach( function(order) {
               window.store.addOrder(order, function(success, order_id, order) {
-                if ( itemAdded ) itemAdded(success);
+                if ( itemAdded ) itemAdded(success, order);
               });
             });
             console.log('getEventOrders recursing: '+recurse);
@@ -415,7 +415,13 @@
                 // Only begin re-poll when fetching is complete
                 pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
             },
-            function getOrdersFoundNew(success) {
+            function getOrdersFoundNew(success, order) {
+              if(success) {
+                var lastInsertedOrder = localStorage.getItem("last_inserted_order");
+                if(lastInsertedOrder && lastInsertedOrder < order.completed) {
+                  localStorage.setItem("last_inserted_order", order.completed);
+                }
+              }
               if ( !processedNew ) {
                 processedNew = true;
                 if ( success ) {
@@ -431,9 +437,15 @@
                     reloadPageWithNewOrder(eventID);
                   }
                 } else {
-                  // TODO: Get the latest in DB and compare completed against current one.
+                  // Get the latest in DB and compare completed against current one.
                   // If multiple orders came in, current logic will not advance.
-                  console.log("No New Data :(");
+                  var lastCompleted = localStorage.getItem("last_completed");
+                  var lastInserted = localStorage.getItem("last_inserted_order");
+                  if(lastCompleted && lastInserted && lastCompleted != lastInserted) {
+                    reloadPageWithNewOrder(eventID);
+                  } else {
+                    console.log("No New Data :(");
+                  }
                 }
               }
             }
@@ -442,7 +454,7 @@
 
         window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
           $('secondary-card').remove();
-          localStorage.setItem("lastCompleted", "");
+          localStorage.setItem("last_completed", "");
 
           window.store.clearOrders();
           getSpecificEvent(eventID);  
