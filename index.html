@@ -113,13 +113,13 @@
       }
       function processAuth() {
         isAuthorized( function( authorized ) {
-          $('onboarding-view #starting').addClass('hidden');
           if ( authorized ) {
-            $('onboarding-view #authenticate').addClass('hidden');
-            $('onboarding-view #onboarding').removeClass('hidden');
-
             // Once authorized, fetch all available events
             eventjoy.events("", {"page[size]" : -1}, function(success, events) {
+              $('onboarding-view #starting').addClass('hidden');
+              $('onboarding-view #authenticate').addClass('hidden');
+              $('onboarding-view #onboarding').removeClass('hidden');
+
               if ( success && events ) {
                 if ( events.data.length && events.data[0].ID ) {
                   // Create event of array and pass it to dropdown
@@ -134,6 +134,7 @@
               }
             });
           } else {
+            $('onboarding-view #starting').addClass('hidden');
             $('onboarding-view #authenticate').removeClass('hidden');
             /*console.log('triggering login');
             */
