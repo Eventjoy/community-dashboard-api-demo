@@ -199,9 +199,9 @@
 				});	
 			}
 
-			function getEventOrders(event_id) {
+			function getEventOrders(event_id, pageSize) {
 				// console.log("Get Event Orders for "+event_id+"...");
-				eventjoy.events_orders(event_id, {"page[number]": 1, "page[size]" : -1}, function(success, orders) {
+				eventjoy.events_orders(event_id, {"page[number]": 1, "page[size]" : pageSize, "sort": "-completed"}, function(success, orders) {
 					if ( success && orders ) {
 						window.store.clearOrders();
 						// console.log(orders);
@@ -294,13 +294,15 @@
     						eventID = events.data[0].ID;
     						// eventID = 3677709;
     						getSpecificEvent(eventID);
-    						getEventOrders(eventID);
+    						getEventOrders(eventID, 5);
+                getEventOrders(eventID, -1);
     					}
     				}
     			});
     		} else {
     			getSpecificEvent(eventID);	
-    			getEventOrders(eventID);
+    			getEventOrders(eventID, 5);
+          getEventOrders(eventID, -1);
     		}
 
         window.newDataTransition = (function newDataTransition(changeData) {
