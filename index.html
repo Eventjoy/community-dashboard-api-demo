@@ -177,9 +177,9 @@
 			}
 
 			function addSecondaryCard(idx, order, discountcode, promoter) {
-				var element = $("secondary-card-"+idx);
+				var element = $(".secondary-card-"+idx);
         if ( !element.length ) {
-          element = $("<secondary-card id='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
+          element = $("<secondary-card class='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
 				  $("#secondary-card-wrapper").append(element);
         }
 				// console.log(element);
@@ -337,7 +337,6 @@
 
                     // Animate the new data in
                     newDataTransition( function() {
-                      $('secondary-card').remove();
                       reloadPageWithNewOrder(eventID);
                     });
 
@@ -351,7 +350,7 @@
 						}
 					});
 			   		poll_data_into_database();
-			   }, 30000);
+			   }, 10000);
 			})();
 			// (function poll_data_into_page() {
 			//    setTimeout(function() {
