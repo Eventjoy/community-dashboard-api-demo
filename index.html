@@ -160,17 +160,21 @@
         $('onboarding-view #loading').removeClass('hidden').addClass('active');
       }
       var contentTimeout = null;
+      var contentShown = false;
       function showContent() {
         clearTimeout( contentTimeout );
-        if ( $('onboarding-view #loading').hasClass('active') ) {
-          $('onboarding-view #onboarding-background').addClass('hiding');
-          $('onboarding-view .pages').addClass('hiding');
-          $('#main-content').removeClass('hidden');
-          setTimeout( function() {
-            hideOnboarding();
-          }, 750);
-        } else {
-          contentTimeout = setTimeout(showContent, 1000);
+        if ( false == contentShown ) {
+          if ( $('onboarding-view #loading').hasClass('active') ) {
+            $('onboarding-view #onboarding-background').addClass('hiding');
+            $('onboarding-view .pages').addClass('hiding');
+            $('#main-content').removeClass('hidden');
+            setTimeout( function() {
+              hideOnboarding();
+            }, 750);
+            contentShown = true;
+          } else {
+            contentTimeout = setTimeout(showContent, 1000);
+          }
         }
       }
 
@@ -206,79 +210,78 @@
 				return "";
 			}	
 
-			function addPrimaryCard(event_id, order, discountcodes, promoter) {
-				eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
-					// console.log(ticketData);
-					// console.log(order.ID);
-					eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
-						// console.log(order.ID);
-						var attendees = [];
-						for(x in attendeeData.data) {
-							// console.log(attendeeData.data[x]);
-							var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
-							var attendeeDetail = {
-								"name" : attendeeData.data[x].attendee.name,
-								"ticket_name" : ticketName
-							};
-							attendees.push(attendeeDetail);
-						}
-						// console.log(attendees);
-						$("main-card.incoming").attr("attendeenames", JSON.stringify(attendees));
-						$("main-card.incoming").attr("registrationcount", order.num_of_attendees);
-						$("main-card.incoming").attr("ordertotal", order.total.slice(0, -3));
-						$("main-card.incoming").attr("discountcode", discountcode);
-						$("main-card.incoming").attr("promoter", promoter);
-						$("main-card.incoming").show();
-						localStorage.setItem("lastCompleted", order.completed);
-					});
-				});
+			function addPrimaryCard(event_id, ticketData, attendeeData, order, discountcodes, promoter) {
+				// console.log(ticketData);
+				// console.log(order.ID);
+				// console.log(order.ID);
+				var attendees = [];
+				for(x in attendeeData.data) {
+					// console.log(attendeeData.data[x]);
+					var ticketName = getTicketName(attendeeData.data[x].ticket_id, ticketData);
+					var attendeeDetail = {
+						"name" : attendeeData.data[x].attendee.name,
+						"ticket_name" : ticketName
+					};
+					attendees.push(attendeeDetail);
+				}
+				// console.log(attendees);
+				$("main-card.incoming").attr("attendeenames", JSON.stringify(attendees));
+				//$("main-card.incoming").attr("registrationcount", order.num_of_attendees);
+        $("main-card.incoming").attr("registrationcount", attendeeData.data.length);
+				$("main-card.incoming").attr("ordertotal", order.total.slice(0, -3));
+				$("main-card.incoming").attr("discountcode", discountcode);
+				$("main-card.incoming").attr("promoter", promoter);
+				$("main-card.incoming").show();
+				localStorage.setItem("lastCompleted", order.completed);
 			}
 
-			function addSecondaryCard(idx, order, discountcode, promoter) {
+			function addSecondaryCard(idx, ticketData, attendeeData, order, discountcode, promoter) {
 				var element = $(".secondary-card-"+idx);
         if ( !element.length ) {
           element = $("<secondary-card class='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
 				  $("#secondary-card-wrapper").append(element);
         }
 				// console.log(element);
-				eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
-					// console.log(order);
-					var attendees = "";
-					for(x in attendeeData.data) {
-						attendees += attendeeData.data[x].attendee.name + ", ";
-					}
-					element.attr("registrationcount", order.num_of_attendees);
-					element.attr("ordertotal", order.total.slice(0, -3));
-					element.attr("attendeenames", attendees.slice(0, -2));
-					element.attr("discountcode", discountcode);
-					element.attr("promoter", promoter);
-				});	
+				// console.log(order);
+				var attendees = "";
+				for(x in attendeeData.data) {
+					attendees += attendeeData.data[x].attendee.name + ", ";
+				}
+				//element.attr("registrationcount", order.num_of_attendees);
+        element.attr("registrationcount", attendeeData.data.length);
+				element.attr("ordertotal", order.total.slice(0, -3));
+				element.attr("attendeenames", attendees.slice(0, -2));
+				element.attr("discountcode", discountcode);
+				element.attr("promoter", promoter);
 			}
 
+      function addOrderCards(idx, event_id, ticketData, order, done) {
+        eventjoy.order_attendees(order.ID, {}, function(status, attendeeData) {
+          discountcode = "NONE";
+          if(order.discount_codes && order.discount_codes.length > 0) { discountcode = order.discount_codes[0]; }
+          var promoter = "NONE";
+          if(order.promoter) { promoter = order.promoter; }
+          if(idx == 0) { addPrimaryCard(event_id, ticketData, attendeeData, order, discountcode, promoter); }
+          addSecondaryCard(idx, ticketData, attendeeData, order, discountcode, promoter);
+          if ( done ) done();
+        });
+      }
 
-      function reloadPageWithNewOrder(event_id) {
-        window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
-          if(orders && orders.length > 0) {
-            for(var i in orders) {
-              var order = orders[i];
-              discountcode = "NONE";
-              if(order.discount_codes && order.discount_codes.length > 0) { discountcode = order.discount_codes[0]; }
-              var promoter = "NONE";
-              if(order.promoter) { promoter = order.promoter; }
-              if(i == 0) { addPrimaryCard(event_id, order, discountcode, promoter); }
-              addSecondaryCard(i, order, discountcode, promoter);
+      function reloadPageWithNewOrder(event_id, done) {
+        eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
+          window.store.getOrders("prev", 5, localStorage.getItem("lastCompleted"), function( status, orders ) {
+            if(orders && orders.length > 0) {
+              for(var i in orders) {
+                addOrderCards(i, event_id, ticketData, orders[i], function() {
+                  // The first time cards are added, ensure the content is shown
+                  console.log('Showing content...');
+                  showContent();
+                });
+              }
             }
-            window.store.getTotalRevenue(function( status, totalRevenue ) {
-              window.store.getTotalAttendees(function( status, totalAttendees ) {
-                var footer = $("event-footer");
-                footer.attr("revenue", totalRevenue);
-                footer.attr("attendees", totalAttendees);
-              });
-            });
-          }
 
-          // Once initial data is loaded, hide loading
-          setTimeout( showContent, 1500 );
+            if ( done ) done();
+          });
         });
       }
 
@@ -287,17 +290,19 @@
 				eventjoy.events_orders(event_id, {"page[number]": pageIndex, "page[size]" : pageSize, "sort": "-completed"}, function(success, orders) {
           console.log('orders.data length: '+orders.data.length);
 					if ( success && orders && orders.data && orders.data.length ) {
-            if ( !recurse ) window.store.clearOrders();
-						orders.data.forEach( function(order) {
+            orders.data.forEach( function(order) {
               window.store.addOrder(order, function(success, order_id, order) {
                 if ( itemAdded ) itemAdded(success);
               });
             });
+            console.log('getEventOrders recursing: '+recurse);
             if ( recurse ) getEventOrders(event_id, pageIndex+1, pageSize, recurse, complete, itemAdded);
 					} else { if ( complete ) complete(); console.log('getEventOrders done!'); }
           if ( !recurse ) {
-            reloadPageWithNewOrder(event_id);
-            if ( complete ) complete();
+            console.log('reloadPageWithNewOrder no-recurse');
+            reloadPageWithNewOrder(event_id, function() {
+              if ( complete ) complete();
+            });
           }
     		});
     	}
@@ -319,20 +324,21 @@
           $('.ripple-background').removeClass('activate').removeClass('deactivate');
           setTimeout( function() {
             // This is where we shuffle the actual DOM elements, and reset the animation
-            if ( changeData ) changeData();
+            changeData(function() {
 
-            // TODO: Trigger audio notification here...
+              // TODO: Trigger audio notification here...
 
-            // Complete animation
-            $('.ripple-background').addClass('activate');
-            setTimeout( function() {
-              $('.move-right').removeClass('move-right');
-              $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
+              // Complete animation
+              $('.ripple-background').addClass('activate');
+              setTimeout( function() {
+                $('.move-right').removeClass('move-right');
+                $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
 
-              // Fade away ripple, then reset
-              setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
-              setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
-            }, 250);
+                // Fade away ripple, then reset
+                setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
+                setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
+              }, 250);
+            });
           }, 800);
         });
 
@@ -341,35 +347,53 @@
 		   		console.log("Polling for DB!!!");
           clearTimeout( pollTimeout );
           var processedNew = false;
-          getEventOrders(eventID, 1, 50, true, null, function(success) {
-            if ( !processedNew ) {
-              processedNew = true;
-              if ( success ) {
-                console.log("Got new data :)");
+          getEventOrders(eventID, 1, 50, true,
+            function getOrdersComplete() {
+                console.log("Full order fetch complete");
 
-                // Animate the new data in
-                if ( animate ) {
-                  newDataTransition( function() {
-                    reloadPageWithNewOrder(eventID);
+                // Once a full fetch is complete, we can display the total revenue/attendees
+                window.store.getTotalRevenue(function( status, totalRevenue ) {
+                  window.store.getTotalAttendees(function( status, totalAttendees ) {
+                    var footer = $("event-footer");
+                    footer.attr("revenue", totalRevenue);
+                    footer.attr("attendees", totalAttendees);
                   });
-                } else {
-                  reloadPageWithNewOrder(eventID);
-                }
-              } else {
-                // TODO: Get the latest in DB and compare completed against current one.
-                // If multiple orders came in, current logic will not advance.
-                console.log("No New Data :(");
-              }
+                });
 
-              pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
+                // Only begin re-poll when fetching is complete
+                pollTimeout = setTimeout( function() { window.poll_data_into_database(eventID, true); }, 15000 );
+            },
+            function getOrdersFoundNew(success) {
+              if ( !processedNew ) {
+                processedNew = true;
+                if ( success ) {
+                  console.log("Got new data :)");
+
+                  // Animate the new data in
+                  if ( animate ) {
+                    newDataTransition( function(done) {
+                      reloadPageWithNewOrder(eventID, function() {
+                        if ( done ) done();
+                      });
+                    });
+                  } else {
+                    reloadPageWithNewOrder(eventID);
+                  }
+                } else {
+                  // TODO: Get the latest in DB and compare completed against current one.
+                  // If multiple orders came in, current logic will not advance.
+                  console.log("No New Data :(");
+                }
+              }
             }
-          });
+          );
 			 });
 
         window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
           $('secondary-card').remove();
           localStorage.setItem("lastCompleted", "");
 
+          window.store.clearOrders();
           getSpecificEvent(eventID);  
           getEventOrders(eventID, 1, 5, false, function() {
             //getEventOrders(eventID, 1, 50, true, null);
