@@ -8,6 +8,7 @@
   	<script src="js/eventjoy.storage.js"></script>
   	<script src="js/moment.js"></script>
   	<script type="text/javascript" src="lib/eventjoy.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/buzz/1.1.10/buzz.min.js"></script>
   	
     <!-- Stylesheet main-->
     <link rel="stylesheet" type="text/css" href="css/main-css.css">
@@ -57,6 +58,21 @@
     <onboarding-view class="hidden"></onboarding-view>
     </div>
     <script type="text/javascript">
+
+    /**
+    * Returns a random integer between min (inclusive) and max (inclusive)
+    * Using Math.round() will give you a non-uniform distribution!
+    */
+    function playRandomMusic(themeName, min, max) {
+      var randNum = Math.floor(Math.random() * (max - min + 1)) + min;
+      var mySound = new buzz.sound( "audios/"+themeName+"/" + randNum, {
+        formats: [ "mp3", "ogg", "aac" ]
+      });
+
+      mySound.play();
+
+      return;
+    }
 
       eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
       //localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')  ;
@@ -339,7 +355,14 @@
             // This is where we shuffle the actual DOM elements, and reset the animation
             changeData(function() {
 
-              // TODO: Trigger audio notification here...
+              // Trigger audio notification here...
+              var themeName = localStorage.getItem("theme_name");
+              var numOfMusic = localStorage.getItem("num_of_theme_music");
+              if(!themeName && !numOfMusic) {
+                themeName = "jurassic_park";
+                numOfMusic = 12;
+              }
+              playRandomMusic(themeName, 1, numOfMusic);
 
               // Complete animation
               /*showRipple();*/
@@ -380,6 +403,9 @@
                 processedNew = true;
                 if ( success ) {
                   console.log("Got new data :)");
+
+                  // Play some sound!
+                  // playRandomMusic("jurassic_park", 1, 4);
 
                   // Animate the new data in
                   if ( animate ) {
