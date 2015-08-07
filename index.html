@@ -13,57 +13,6 @@
     <link rel="stylesheet" type="text/css" href="css/main-css.css">
     
     <script>
-      var showing = false;
-      function showSettings(){
-        if(!showing){
-          $('settings-view').removeClass('hidden');
-          $('settings-view').addClass('showing');
-          showing = true;
-        }else{
-          $('settings-view').removeClass('showing');
-          $('settings-view').addClass('hidden');
-          showing = false;
-        }
-      }
-      function showOnboarding() {
-        $('onboarding-view').removeClass('hidden');
-        $('onboarding-view').addClass('showing');
-        $('onboarding-view #onboarding-background').removeClass('hiding');
-        $('onboarding-view .pages').addClass('hiding');
-        $('onboarding-view #onboarding').removeClass('hidden');
-        $('onboarding-view #loading').addClass('hiding').removeClass('active');
-      }
-      function hideOnboarding() {
-        $('onboarding-view').addClass('hidden');
-        $('onboarding-view').removeClass('showing');
-        $('onboarding-view #onboarding').addClass('hidden');
-        $('onboarding-view #loading').addClass('hidden').removeClass('active');
-      }
-
-      function setEventID(ID){
-          alert(ID);
-      }
-
-      function showLoading() {
-        $('onboarding-view #onboarding').addClass('hidden');
-        $('onboarding-view #loading').removeClass('hidden').addClass('active');
-
-        //setTimeout( showContent, 4000 );
-      }
-      var contentTimeout = null;
-      function showContent() {
-        clearTimeout( contentTimeout );
-        if ( $('onboarding-view #loading').hasClass('active') ) {
-          $('onboarding-view #onboarding-background').addClass('hiding');
-          $('onboarding-view .pages').addClass('hiding');
-          $('#main-content').removeClass('hidden');
-          setTimeout( function() {
-            hideOnboarding();
-          }, 750);
-        } else {
-          contentTimeout = setTimeout(showContent, 1000);
-        }
-      }
     </script>
   
     <!-- Polymer import -->
@@ -81,6 +30,7 @@
     <div id="main-content" class="hidden">
     	<!-- This is where we want to define values dynamically -->
       <div id="main-card-wrapper">
+        <div class="ripple-background"></div>
       	<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none" class="incoming"></main-card>
         <!--<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none" class="incoming"></main-card>-->
       </div>
@@ -107,21 +57,108 @@
     <onboarding-view class="hidden"></onboarding-view>
     </div>
     <script type="text/javascript">
-      $(document).ready(function() {
-      	eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
-  		  localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')	;
 
-    		if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
-    			// We aleady have an access token
-    			console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
-    			eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
-    		} else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
-    			// No, but we we do have a oauth request token
-    			console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
-    			eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
-    				localStorage.setItem( 'eventjoy_access_token', response.access_token);
-    			});
-    		}
+      eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
+      //localStorage.setItem('eventjoy_oauth_token', 'nKw0aWOyH8elGZntjbh79VWRbsoXImTIuohEghi1MD1LXQg++oRa8JnEWaxwkW7U9OlpyRfSb0YeRh6EOr7F0wwA4IhYgUCIp+2mF1leO3/DvIjAN6PeWoTu79BWM4VG')  ;
+
+      function isAuthorized(callback) {
+        if ( localStorage.getItem( 'eventjoy_access_token' ) ) {
+          // We aleady have an access token
+          console.log('found access token: '+localStorage.getItem('eventjoy_access_token'));
+          eventjoy.setAccessToken( localStorage.getItem('eventjoy_access_token') );
+          if ( callback ) callback( true );
+        } else if ( localStorage.getItem( 'eventjoy_oauth_token' ) ) {
+          // No, but we we do have a oauth request token
+          console.log('found oauth token: '+localStorage.getItem('eventjoy_oauth_token'));
+          eventjoy.auth( localStorage.getItem('eventjoy_oauth_token'), function(success, response) {
+            localStorage.setItem( 'eventjoy_access_token', response.access_token);
+            if ( callback ) callback( true );
+          });
+        } else {
+          console.log('no auth found');
+          if ( callback ) callback( false );
+        }
+      }
+
+      var showing = false;
+      function showSettings(){
+        if(!showing){
+          $('settings-view').removeClass('hidden');
+          $('settings-view').addClass('showing');
+          showing = true;
+        }else{
+          $('settings-view').removeClass('showing');
+          $('settings-view').addClass('hidden');
+          showing = false;
+        }
+      }
+      function processAuth() {
+        isAuthorized( function( authorized ) {
+          $('onboarding-view #starting').addClass('hidden');
+          if ( authorized ) {
+            $('onboarding-view #onboarding').removeClass('hidden');
+          } else {
+            $('onboarding-view #authenticate').removeClass('hidden');
+            /*console.log('triggering login');
+            */
+          }
+        });
+      }
+      
+      window.showOnboarding = (function showOnboarding() {
+        $('onboarding-view').removeClass('hidden');
+        $('onboarding-view').addClass('showing');
+        $('onboarding-view #onboarding-background').removeClass('hiding');
+
+        // Reset all pages
+        $('onboarding-view #loading').addClass('hiding').removeClass('active');
+        $('onboarding-view #starting').removeClass('hidden');
+        $('onboarding-view #authenticate').addClass('hidden');
+        $('onboarding-view #onboarding').addClass('hidden');
+
+        // Check to see if we should authorize or not
+        processAuth();
+      });
+
+      function startLogin() {
+        eventjoy.login(function() {
+          processAuth();
+          console.log('login closed');
+        });
+      }
+      function hideOnboarding() {
+        $('onboarding-view').addClass('hidden');
+        $('onboarding-view').removeClass('showing');
+        $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #loading').addClass('hidden').removeClass('active');
+      }
+
+      function setEventID(ID){
+          alert(ID);
+      }
+
+      function showLoading() {
+        $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #loading').removeClass('hidden').addClass('active');
+
+        beginProcessingEvent();
+      }
+      var contentTimeout = null;
+      function showContent() {
+        clearTimeout( contentTimeout );
+        if ( $('onboarding-view #loading').hasClass('active') ) {
+          $('onboarding-view #onboarding-background').addClass('hiding');
+          $('onboarding-view .pages').addClass('hiding');
+          $('#main-content').removeClass('hidden');
+          setTimeout( function() {
+            hideOnboarding();
+          }, 750);
+        } else {
+          contentTimeout = setTimeout(showContent, 1000);
+        }
+      }
+
+      $(document).ready(function() {
     			
     		initialiseDB();
 
@@ -284,52 +321,36 @@
   				});
     		}
 
-    		if(eventID == 0) {
-    			eventjoy.events("", {}, function(success, events) {
-    				if ( success && events ) {
-    					if ( events.data.length && events.data[0].ID ) {
-                // Create event of array and pass it to dropdown
-                var eventArrays = [];
-                events.data.forEach(function(order) {
-                  eventArrays.push({"eventName": order.name, "eventId" : order.ID});
-                });
-
-                $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
-
-    						eventID = events.data[0].ID;
-    						// eventID = 3677709;
-    						getSpecificEvent(eventID);
-    						getEventOrders(eventID, 5);
-                getEventOrders(eventID, -1);
-    					}
-    				}
-    			});
-    		} else {
-    			getSpecificEvent(eventID);	
-    			getEventOrders(eventID, 5);
-          getEventOrders(eventID, -1);
-    		}
-
         window.newDataTransition = (function newDataTransition(changeData) {
-          //$('#main-card-wrapper').addClass('move-right');
+          // Begin animation. Slide out main card, and shuffle secondary cards
           $('#main-card-wrapper .transition').show().removeClass('move-off').removeClass('move-in').addClass('move-right');
           $('#secondary-card-wrapper .transition').each( function(idx, elem) {
             setTimeout( function() {
               $(elem).addClass('move-right');
             }, 100 * ($('.transition').length-idx));
-            //}, 20 * idx);
           });
 
           setTimeout( function() {
             $('#main-card-wrapper .transition').show().removeClass('move-right').addClass('move-off');
           }, 650);
 
+          // Wait for shuffle to complete, then apply new data
+          $('.ripple-background').removeClass('activate').removeClass('deactivate');
           setTimeout( function() {
             // This is where we shuffle the actual DOM elements, and reset the animation
             if ( changeData ) changeData();
+
+            // TODO: Trigger audio notification here...
+
+            // Complete animation
+            $('.ripple-background').addClass('activate');
             setTimeout( function() {
               $('.move-right').removeClass('move-right');
               $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
+
+              // Fade away ripple, then reset
+              setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 750);
+              setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 1350);
             }, 250);
           }, 1300);
         });
@@ -363,7 +384,37 @@
 					});
 			   		poll_data_into_database();
 			   }, 10000);
-			})();
+			 });
+
+      function beginProcessingEvent() {
+        if(eventID == 0) {
+          eventjoy.events("", {}, function(success, events) {
+            if ( success && events ) {
+              if ( events.data.length && events.data[0].ID ) {
+                // Create event of array and pass it to dropdown
+                var eventArrays = [];
+                events.data.forEach(function(order) {
+                  eventArrays.push({"eventName": order.name, "eventId" : order.ID});
+                });
+
+                $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+
+                eventID = events.data[0].ID;
+                // eventID = 3677709;
+                getSpecificEvent(eventID);
+                getEventOrders(eventID, 5);
+                getEventOrders(eventID, -1);
+              }
+            }
+          });
+        } else {
+          getSpecificEvent(eventID);  
+          getEventOrders(eventID, 5);
+          getEventOrders(eventID, -1);
+        }
+
+        poll_data_into_database();
+      }
 			// (function poll_data_into_page() {
 			//    setTimeout(function() {
 			//    		console.log("Polling for page")
@@ -377,10 +428,10 @@
 			//    		poll_data_into_page();
 			//    }, 30000);
 			// })();
-      });
 
-      // Start by showing onboarding
-      showOnboarding();
+        // Start by showing onboarding
+        //showOnboarding();
+      });
     </script>
   </body>
 </html>

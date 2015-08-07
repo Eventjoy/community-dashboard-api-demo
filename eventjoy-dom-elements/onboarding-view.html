@@ -15,6 +15,7 @@
   top:0;
   left:0;
   opacity:1;
+  z-index:200;
 
   -webkit-transition: all 600ms ease-in-out;
   -moz-transition: all 600ms ease-in-out;
@@ -46,11 +47,11 @@ paper-material{
   min-width:30%;
 }
 
-#onboarding.hidden, #loading.hidden {
+#starting.hidden, #authenticate.hidden, #onboarding.hidden, #loading.hidden {
   display:none;
 }
 
-#my-button {
+.color-button {
     background: #FF4081;
     color: #FFFFFF;;
 }
@@ -82,7 +83,26 @@ paper-material{
 
   <div class="pages">
     <paper-material elevation="4">
-      <div id="onboarding">
+
+      <div id="starting">
+        <div class="onboarding-text">
+          <p><b>Hang tight, we're setting things up!</b></p>
+        </div>
+        <div class="onboarding-confirm">
+          <paper-progress indeterminate="true"></paper-progress>
+        </div>
+      </div>
+
+      <div id="authenticate" class="hidden">
+        <div class="onboarding-text">
+          <p><b>Let's get started by connecting to your Eventjoy account...</b></p>
+        </div>
+        <div class="onboarding-confirm">
+          <paper-button class="center color-button" onClick="startLogin()" raised>Connect Eventjoy</paper-button>
+        </div>
+      </div>
+
+      <div id="onboarding" class="hidden">
         <div class="onboarding-text">
           <p><b>What event do you want to visualize?</b></p>
           <!-- <paper-button class="center dropdown-trigger" flat>Select an Event</paper-button></br>
@@ -95,7 +115,7 @@ paper-material{
           <dropdown-custom class="center dropdown-trigger" an-array="{{eventArray}}"></dropdown-custom>
         </div>
         <div class="onboarding-confirm">
-          <paper-button class="center" id="my-button" onClick="onEventSelected();showLoading()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
+          <paper-button class="center color-button" onClick="onEventSelected();showLoading()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
         </div>
       </div>
 
@@ -120,6 +140,9 @@ paper-material{
       properties: {
         // declare properties for the element's public API
         eventArray: Array
+      },
+      ready: function() {
+        showOnboarding();
       }
     });
 
