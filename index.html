@@ -58,6 +58,7 @@
     <onboarding-view class="hidden"></onboarding-view>
     </div>
     <script type="text/javascript">
+      var currEvent = 0;
 
     /**
     * Returns a random integer between min (inclusive) and max (inclusive)
@@ -76,6 +77,7 @@
 
     function initialiseMusicThemes() {
       var eventArrays = [];
+      eventArrays.push({"theme_name": "None", "theme_value" : "none"});
       eventArrays.push({"theme_name": "Animals", "theme_value" : "animals"});
       eventArrays.push({"theme_name": "Audience", "theme_value" : "audience"});
       eventArrays.push({"theme_name": "Celebration", "theme_value" : "celebration"});
@@ -84,6 +86,9 @@
       eventArrays.push({"theme_name": "Star Wars", "theme_value" : "star_wars"});
 
       localStorage.setItem("music_theme_list", JSON.stringify(eventArrays));
+
+      $('settings-view').attr("current-sound", "Jurassic Park");
+      $('dropdown-custom-sounds').attr("an-array-sounds", JSON.stringify(eventArrays));
     }
 
       eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
@@ -168,6 +173,15 @@
         // Check to see if we should authorize or not
         processAuth();
       });
+      function showLoading() {
+        $('onboarding-view').removeClass('hidden');
+        $('onboarding-view').addClass('showing');
+        $('onboarding-view #onboarding-background').removeClass('hiding');
+        $('onboarding-view .pages').removeClass('hiding');
+
+        $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #loading').removeClass('hiding').removeClass('hidden').addClass('active');
+      }
 
       function startLogin() {
         eventjoy.login(function() {
@@ -183,14 +197,27 @@
       }
 
       function setEventID(ID){
+          currEvent = ID;
           $('settings-view').attr("selected-event", ID);
           window.beginProcessingEvent(ID);
       }
 
-      function showLoading() {
-        $('onboarding-view #onboarding').addClass('hidden');
-        $('onboarding-view #loading').removeClass('hidden').addClass('active');
+      function settingsChanged(ID, soundPackID){
+        console.log("Event Id "+ ID + " sound pack id "+ soundPackID);
+
+        // Set the sound theme
+        localStorage.setItem("theme_name", soundPackID);
+
+        // Refresh the event
+        if ( ID != currEvent ) {
+          contentShown = false;
+          showLoading();
+          setTimeout( function() {
+            setEventID(ID);
+          }, 250);
+        }
       }
+
       var contentTimeout = null;
       var contentShown = false;
       function showContent() {
@@ -407,8 +434,8 @@
                 window.store.getTotalRevenue(function( status, totalRevenue ) {
                   window.store.getTotalAttendees(function( status, totalAttendees ) {
                     var footer = $("event-footer");
-                    footer.attr("revenue", totalRevenue);
-                    footer.attr("attendees", totalAttendees);
+                    footer.attr("revenue", totalRevenue).find('.revenue-box').fadeIn();
+                    footer.attr("attendees", totalAttendees).find('.attendee-box').fadeIn();
                   });
                 });
 
@@ -455,6 +482,10 @@
         window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
           $('secondary-card').remove();
           localStorage.setItem("last_completed", "");
+
+          // Reset footer
+          $("event-footer").attr("revenue", 0).find('.revenue-box').hide();
+          $("event-footer").attr("attendees", 0).find('.attendee-box').hide();
 
           window.store.clearOrders();
           getSpecificEvent(eventID);  

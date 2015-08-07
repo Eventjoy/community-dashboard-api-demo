@@ -30,14 +30,14 @@
 			float:left;
 			display: inline-block;
 			padding-left:16px;
-			padding-top:16px;
+			padding-top:0.8%;
 			padding-bottom:16px;
 		}
 		.right-aligned{ float:right; clear:right; }
 		.right-aligned-noclear{float:right;}
 		.float-right{
 			padding-right: 16px;
-			padding-top:16px;
+			padding-top:0.8%;
 			padding-bottom:16px;
 			float:right;
 		}
@@ -51,26 +51,36 @@
   			color: rgba(255,255,255,.87);
   		}
 
+  		.big {
+  			font-size:22px;
+  		}
+  		.small {
+  			font-size:14px;
+  		}
+  		.icon {
+  			padding:5px 0;
+  		}
+
 	</style>
 	<!-- Template Setup -->
 	<template>
 		<div id="footer">
 			<div class="float-left">
-				<span class="white">{{eventname}}</span></br>
-				<span class="white">{{eventdate}}</span>
+				<span class="white big">{{eventname}}</span></br>
+				<span class="white small">{{eventdate}}</span>
 			</div>
 			<div class="float-right" onClick="showSettings()">
 				<paper-ripple id="ripple" style="pointer-events: none;"></paper-ripple>
-				<iron-icon class="ripple big white" icon="settings"></iron-icon>
+				<iron-icon class="ripple big white icon" icon="settings"></iron-icon>
 			</div>
 			<div class="vertical-bar"></div>
-			<div class="float-right">
-				<span class="right-aligned white caps">Revenue</span></br>
-				<span class="right-aligned white "><span>{{currencysymbol}}</span>{{revenue}}</span>
+			<div class="float-right revenue-box">
+				<span class="right-aligned white caps small">Revenue</span></br>
+				<span class="right-aligned white big"><span>{{currencysymbol}}</span>{{revenue}}</span>
 			</div>
-			<div class="float-right">
-				<span class="right-aligned white caps">Attendees</span></br>
-				<span class="right-aligned white">{{attendees}}</span>
+			<div class="float-right attendee-box">
+				<span class="right-aligned white caps small">Attendees</span></br>
+				<span class="right-aligned white big">{{attendees}}</span>
 			</div>
 		</div>
 	</template>
