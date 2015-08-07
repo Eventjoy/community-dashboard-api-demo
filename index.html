@@ -77,6 +77,7 @@
 
     function initialiseMusicThemes() {
       var eventArrays = [];
+      eventArrays.push({"theme_name": "None", "theme_value" : "none"});
       eventArrays.push({"theme_name": "Animals", "theme_value" : "animals"});
       eventArrays.push({"theme_name": "Audience", "theme_value" : "audience"});
       eventArrays.push({"theme_name": "Celebration", "theme_value" : "celebration"});
@@ -85,6 +86,9 @@
       eventArrays.push({"theme_name": "Star Wars", "theme_value" : "star_wars"});
 
       localStorage.setItem("music_theme_list", JSON.stringify(eventArrays));
+
+      $('settings-view').attr("current-sound", "Jurassic Park");
+      $('dropdown-custom-sounds').attr("an-array-sounds", JSON.stringify(eventArrays));
     }
 
       eventjoy.setApiKey('64e86dc7f5f6e99874d53229601f2bef4653');
@@ -143,7 +147,6 @@
 
                   $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
                   $('settings-view').attr("event-array-settings", JSON.stringify(eventArrays));
-                  $('dropdown-custom-sounds').attr("an-array-sounds", JSON.stringify(eventArrays));
                 }
               }
             });
