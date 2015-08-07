@@ -90,13 +90,21 @@
           }
         },
         onSoundSelected: function(){
+          console.log("Sound selected "+ this.currentSound);
+          console.log("An array of sounds length "+ this.anArraySounds.length);
           // iterate over the list to find a matching ID and set all values for the view
             for(var i = 0; i < this.anArraySounds.length; i++){
               var soundItem = this.anArraySounds[i];
+
+              console.log(soundItem.theme_value + " : "+ this.currentSound);
   
-              if(this.currentEvent == soundItem.eventId){
-                this.displayTextSounds = soundItem.eventName;
-                this.displayValueSounds = soundItem.eventId;
+              if(this.currentSound == soundItem.theme_value){
+                this.displayTextSounds = soundItem.theme_name;
+                this.displayValueSounds = soundItem.theme_value;
+
+                console.log("Sound found in dropdown :) ");
+              }else{
+                console.log("Sound not found!! :( ");
               }
             }
         },
