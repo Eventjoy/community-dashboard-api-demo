@@ -361,10 +361,9 @@
               // Trigger audio notification here...
               var themeName = localStorage.getItem("theme_name");
               var numOfMusic = localStorage.getItem("num_of_theme_music");
-              if(!themeName && !numOfMusic) {
-                themeName = "jurassic_park";
-                numOfMusic = 12;
-              }
+              if(!themeName) themeName = "jurassic_park"; 
+              if(!numOfMusic) numOfMusic = 12; 
+              
               playRandomMusic(themeName, 1, numOfMusic);
 
               // Complete animation
@@ -406,10 +405,6 @@
                 processedNew = true;
                 if ( success ) {
                   console.log("Got new data :)");
-
-                  // Play some sound!
-                  // playRandomMusic("jurassic_park", 1, 4);
-
                   // Animate the new data in
                   if ( animate ) {
                     newDataTransition( function(done) {
