@@ -100,7 +100,7 @@
             $('onboarding-view #onboarding').removeClass('hidden');
 
             // Once authorized, fetch all available events
-            eventjoy.events("", {}, function(success, events) {
+            eventjoy.events("", {"page[size]" : -1}, function(success, events) {
               if ( success && events ) {
                 if ( events.data.length && events.data[0].ID ) {
                   // Create event of array and pass it to dropdown
@@ -307,6 +307,19 @@
     		});
     	}
 
+      window.showRipple = (function showRipple(done) {
+        $('.ripple-background').removeClass('activate').removeClass('deactivate');
+        $('.ripple-background').addClass('activate');
+        setTimeout( function() {
+          if ( done ) done();
+        }, 250);
+      });
+
+      window.hideRipple = (function hideRipple() {
+        setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
+        setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
+      });
+
         window.newDataTransition = (function newDataTransition(changeData) {
           // Begin animation. Slide out main card, and shuffle secondary cards
           $('#main-card-wrapper .transition').show().removeClass('move-off').removeClass('move-in').addClass('move-right');
@@ -321,7 +334,7 @@
           }, 300);
 
           // Wait for shuffle to complete, then apply new data
-          $('.ripple-background').removeClass('activate').removeClass('deactivate');
+          /*$('.ripple-background').removeClass('activate').removeClass('deactivate');*/
           setTimeout( function() {
             // This is where we shuffle the actual DOM elements, and reset the animation
             changeData(function() {
@@ -329,14 +342,13 @@
               // TODO: Trigger audio notification here...
 
               // Complete animation
-              $('.ripple-background').addClass('activate');
+              /*showRipple();*/
               setTimeout( function() {
                 $('.move-right').removeClass('move-right');
                 $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
 
                 // Fade away ripple, then reset
-                setTimeout( function() { $('.ripple-background').removeClass('activate').addClass('deactivate'); }, 350);
-                setTimeout( function() { $('.ripple-background').removeClass('deactivate'); }, 750);
+                /*hideRipple();*/
               }, 250);
             });
           }, 800);
