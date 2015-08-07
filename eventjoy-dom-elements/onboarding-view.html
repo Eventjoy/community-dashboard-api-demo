@@ -115,7 +115,7 @@ paper-material{
           <dropdown-custom class="center dropdown-trigger" an-array="{{eventArray}}"></dropdown-custom>
         </div>
         <div class="onboarding-confirm">
-          <paper-button class="center color-button" onClick="onEventSelected();showLoading()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
+          <paper-button class="center color-button" onClick="onEventSelected()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
         </div>
       </div>
 
@@ -149,11 +149,14 @@ paper-material{
     });
 
     function onEventSelected(){
-      var eventId = document.getElementsByTagName("dropdown-custom")[0]
-                    .getElementsByTagName("paper-material")[0]
-                    .getElementsByTagName("span")[0].innerText;
-      console.log(eventId);
-      setEventID(eventId);
+
+        showLoading();
+
+        var eventId = document.getElementsByTagName("dropdown-custom")[0]
+                      .getElementsByTagName("paper-material")[0]
+                      .getElementsByTagName("span")[0].innerText;
+        console.log(eventId);
+        setEventID(eventId);
     }
   </script>
 

@@ -3,8 +3,9 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="dropdown-custom-settings.html">
       
 <dom-module id="settings-view">
 
@@ -16,6 +17,11 @@
     position: absolute;
     top:0;
     left:0;
+    z-index:200;
+
+}
+#settings-content{
+  padding:16px;
 }
 
 #cancel-wrapper{
@@ -26,6 +32,22 @@
   color:#FFFFFF;
 }
 
+.settings-button{
+    color: #FF4081;;
+}
+
+
+   paper-material{
+      margin:0 auto;
+      width:30%;
+      /*height:300px;*/
+      margin-top: 15%;
+      background:#FFFFFF;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      min-width:30%;
+    }
 
 
 .big {
@@ -39,21 +61,26 @@ buttons{
 
 <template>
   <div id="settings">
-        <div id="cancel-wrapper" onclick="showSettings()">
+        <!-- <div id="cancel-wrapper" onclick="showSettings()">
           <paper-ripple style="pointer-events: none;"></paper-ripple>
           <iron-icon class="ripple big" icon="cancel"></iron-icon>
-        </div>
+        </div> -->
 
-        <paper-dialog>
-          <h2>Header</h2>
-          <paper-dialog-scrollable>
-            Lorem ipsum...
-          </paper-dialog-scrollable>
-          <div class="buttons">
-            <paper-button dialog-dismiss>Cancel</paper-button>
-            <paper-button dialog-confirm>Accept</paper-button>
+        <div id="settings-content-wrapper">
+        <paper-material elevation="4">
+        <div id="settings-content">
+          <h2>CUSTOMIZE</h2>
+          <div>
+           <p>Eventjoy Event</p>
+           <dropdown-custom-settings an-array-settings="{{eventArraySettings}}" current-event="{{selectedEvent}}"></dropdown-custom-settings>
           </div>
-        </paper-dialog>
+          <div class="buttons">
+            <paper-button class="settings-button" on-click="cancelView" flat>Cancel</paper-button>
+            <paper-button class="settings-button" flat>Accept</paper-button>
+          </div>
+        </div>
+        </paper-material>
+      </div>
   </div>
 </template>
 
@@ -65,10 +92,11 @@ buttons{
       // add properties and methods on the element's prototype
       properties: {
         // declare properties for the element's public API
-        demo: {
-          type: String,
-          value: "This is where dynamic data for the order will show"
-        }
+        eventArraySettings: Array,
+        selectedEvent: String
+      },
+      cancelView: function(e){
+          showSettings();
       }
     });
   </script>

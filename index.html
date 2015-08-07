@@ -110,6 +110,7 @@
                   });
 
                   $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+                  $('settings-view').attr("event-array-settings", JSON.stringify(eventArrays));
                 }
               }
             });
@@ -150,6 +151,7 @@
       }
 
       function setEventID(ID){
+          $('settings-view').attr("selected-event", ID);
           window.beginProcessingEvent(ID);
       }
 

@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html"/>
 <link rel="import" href="../bower_components/paper-button/paper-button.html"/>
 <!-- Name of the Custom Element -->
-<dom-module id="dropdown-custom">
+<dom-module id="dropdown-custom-settings">
 
   <style>
     .dropdown-content{
@@ -19,7 +19,7 @@
       background-color: #FFFFFF;
       padding: 8px;
     }
-    #item-list{
+    #item-list-settings{
       display:  block;
       list-style: none;
     }
@@ -30,35 +30,35 @@
     ul{
       padding: 0;
     }
-    #item-list li{
+    #item-list-settings li{
       text-align: left;
       padding: 8px;
       border-bottom: 1px solid #D1D1D1;
     }
-    #item-list li a{
+    #item-list-settings li a{
       display:block;
       text-decoration: none;
       font-size: 16px;
     }
-    .dropdown-button-flat{
+    .dropdown-button-flat-settings{
       color: rgba(0,0,0,.87);
       margin: 16px;
     }
-    #list{
+    #list-settings{
       margin-bottom: 20px;
     }
   </style>
 
 <!-- Template Displays a paper-button and paper-material with an embedded iron-dropdown -->
 <template>
-    <paper-button flat class="dropdown-button-flat" on-click="showIronDropdown">{{displayText}}<span style="display:none">{{displayValue}}</span></paper-button>
-    <iron-dropdown id="list" horizontal-align="center" vertical-align="top">
+    <paper-button flat class="dropdown-button-flat-settings" on-click="showIronDropdown">{{displayTextSettings}}<span style="display:none">{{displayValueSettings}}</span></paper-button>
+    <iron-dropdown id="list-settings" horizontal-align="center" vertical-align="top">
         <div class="dropdown-content">
           <paper-material elevation="8" >
-            <ul id="item-list">
-            <template is="dom-repeat" items="{{anArray}}">
+            <ul id="item-list-settings">
+            <template is="dom-repeat" items="{{anArraySettings}}">
                 <li>
-                    <span><a id="clicked" on-click="handleEvent">{{item.eventName}}</a><span style="display:none">{{item.eventId}}</span><span>
+                    <span><a id="clicked-settings" on-click="handleEvent">{{item.eventName}}</a><span style="display:none">{{item.eventId}}</span><span>
                 </li>
             </template>
           </ul>
@@ -68,31 +68,44 @@
 </template>
 
 <script>
-  Polymer({is: 'dropdown-custom',
+  Polymer({is: 'dropdown-custom-settings',
         properties:{
           // Here we will have to reference this as an-array from the top elements
-          anArray: Array,
-          displayText:{
+          anArraySettings: Array,
+          displayTextSettings:{
             type: String,
             value: "Select an Event"
           },
-          displayValue:{
+          displayValueSettings:{
             type: String,
-            value: "000000"
+            value: "000000",
+          },
+          currentEvent: {
+            type:String,
+            observer: 'onEventSelected'
           }
+        },
+        onEventSelected: function(){
+          // iterate over the list to find a matching ID and set all values for the view
+            for(var i = 0; i < this.anArraySettings.length; i++){
+              var eventItem = this.anArraySettings[i];
+  
+              if(this.currentEvent == eventItem.eventId){
+                this.displayTextSettings = eventItem.eventName;
+                this.displayValueSettings = eventItem.eventId;
+              }
+            }
         },
         handleEvent : function(e){
           // this.displayText = data;
           console.log(e);
-          this.displayValue = e.target.parentNode.children[1].innerText;
-          this.displayText = e.target.text;
+          this.displayValueSettings = e.target.parentNode.children[1].innerText;
+          this.displayTextSettings = e.target.text;
 
-
-
-          document.querySelector('#list').close();
+          document.querySelector('#list-settings').close();
         },
         showIronDropdown : function(){
-            document.querySelector('#list').open();
+            document.querySelector('#list-settings').open();
         }
   });
 </script>
