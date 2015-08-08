@@ -7,7 +7,7 @@ html{
 body{
 	height: 100%;
 	margin:0px auto;
-	background: #FFFFFF;
+	background: #FCFCFC;
 	position: relative;
 	font-family: 'Roboto', sans-serif;
 }
@@ -37,6 +37,15 @@ body{
     font-size: 2vh;
     line-height: 3vh;
 }
+#recent-emptystate{
+	clear:both;
+	margin: 10vh auto 0;
+	width:80%;
+	height:1.5%;
+    font-size: 2vh;
+    line-height: 3vh;
+    text-align:center;
+}
 
 #secondary-card-wrapper{
 	width:80%;
@@ -56,6 +65,9 @@ body{
 
 .hidden{
 	visibility: hidden;
+}
+.very-hidden{
+	display:none;
 }
 
 .showing{

@@ -36,16 +36,10 @@
         <!--<main-card headerimage="" registrationcount="1" ordertotal="$0.00" discountcode="NONE" promoter="NONE" style="display:none" class="incoming"></main-card>-->
       </div>
 
-    	<div id="recent-activity">
-        <p>RECENT ACTIVITY</p>
-      </div>
+    	<div id="recent-activity" class="hidden"><p>RECENT ACTIVITY</p></div>
+      <div id="recent-emptystate" class="very-hidden"><p><b>Sell some more tickets and we'll show you those additional attendees down here &#x1F648;</b></p></div>
 
-      <div id="secondary-card-wrapper" >
-          <!-- <secondary-card></secondary-card> -->
-          <!-- <secondary-card></secondary-card>
-          <secondary-card></secondary-card>
-          <secondary-card></secondary-card> -->
-      </div>
+      <div id="secondary-card-wrapper"></div>
       
         <div id="footer-wrapper">
     	       <!-- Footer element -->
@@ -86,7 +80,6 @@
       eventArrays.push({"theme_name": "Star Wars", "theme_value" : "star_wars"});
 
       localStorage.setItem("music_theme_list", JSON.stringify(eventArrays));
-
 
       $('dropdown-custom-sounds').attr("an-array-sounds", JSON.stringify(eventArrays));
       $('settings-view').attr("selected-sound", "jurassic_park");
@@ -130,6 +123,9 @@
         }
       }
       function processAuth() {
+        initialiseDB();
+        initialiseMusicThemes();
+
         isAuthorized( function( authorized ) {
           if ( authorized ) {
             // Once authorized, fetch all available events
@@ -172,7 +168,9 @@
         $('onboarding-view #onboarding').addClass('hidden');
 
         // Check to see if we should authorize or not
-        processAuth();
+        setTimeout( function() {
+          processAuth();
+        }, 250);
       });
       function showLoading() {
         $('onboarding-view').removeClass('hidden');
@@ -239,10 +237,6 @@
       }
 
       $(document).ready(function() {
-    			
-        initialiseMusicThemes();
-
-    		initialiseDB();
 
     		// if eventID is passed in, it should be grabbed here.(Dropdown)
     		function getSpecificEvent(event_id) {
@@ -294,6 +288,8 @@
 				$("main-card.incoming").attr("discountcode", discountcode);
 				$("main-card.incoming").attr("promoter", promoter);
 				$("main-card.incoming").show();
+        $('#main-card').removeClass('very-hidden');
+        $('#main-card-emptystate').addClass('very-hidden');
 				localStorage.setItem("last_completed", order.completed);
 			}
 
@@ -315,6 +311,8 @@
 				element.attr("attendeenames", attendees.slice(0, -2));
 				element.attr("discountcode", discountcode);
 				element.attr("promoter", promoter);
+        $('#recent-activity').removeClass('hidden');
+        $('#recent-emptystate').addClass('very-hidden');
 			}
 
       function addOrderCards(idx, event_id, ticketData, order, done) {
@@ -340,6 +338,7 @@
                   showContent();
                 });
               }
+
             } else {
               // If no cards are added, show content so we can display empty state
               console.log('Showing content...');
@@ -485,12 +484,28 @@
 			 });
 
         window.beginProcessingEvent = (function beginProcessingEvent(eventID) {
-          $('secondary-card').remove();
           localStorage.setItem("last_completed", "");
 
           // Reset footer
           $("event-footer").attr("revenue", 0).find('.revenue-box').hide();
           $("event-footer").attr("attendees", 0).find('.attendee-box').hide();
+
+          // Reset main card
+          $("main-card.incoming").attr("attendeenames", []);
+          $("main-card.incoming").attr("registrationcount", 0);
+          $("main-card.incoming").attr("ordertotal", 0);
+          $("main-card.incoming").attr("discountcode", "NONE");
+          $("main-card.incoming").attr("promoter", "NONE");
+          $("main-card.incoming").show();
+
+          // Reset secondary cards
+          $('secondary-card').remove();
+          $('#recent-activity').addClass('hidden');
+
+          // Start by showing empty state
+          $('#recent-emptystate').removeClass('very-hidden');
+          $('#main-card').addClass('very-hidden');
+          $('#main-card-emptystate').removeClass('very-hidden');
 
           window.store.clearOrders();
           getSpecificEvent(eventID);  

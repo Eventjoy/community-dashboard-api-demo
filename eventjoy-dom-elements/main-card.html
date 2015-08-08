@@ -6,6 +6,7 @@
 <style>
 
  paper-material{
+    position:relative;
     height:100%;
     width: 60%;
     padding: 0;
@@ -98,6 +99,21 @@
     color: rgba(0,0,0,.54);
   }
 
+  #main-card-emptystate {
+    position:absolute;
+    top:40%;left:0;
+    width:100%;
+    text-align: center;
+  }
+  #main-card-emptystate.very-hidden {
+    display:none;
+  }
+  #main-card-emptystate>p {
+    display: block;
+    width:100%;
+    text-align: center;
+  }
+
 </style>
 
 <template>
@@ -128,13 +144,16 @@
               </div>
           </div>
           <div id="registration-wrapper">
-			<!-- Array of Elements -->
-			<template is="dom-repeat" items="{{attendeenames}}">
+    			<!-- Array of Elements -->
+    			<template is="dom-repeat" items="{{attendeenames}}">
             	<card-list-item attendeename="{{item.name}}" tickettype="{{item.ticket_name}}"></card-list-item> 
           	</template>
           </div>
           <div class="inner-fade"></div>
         </div>
+      </div>
+      <div id="main-card-emptystate" class="very-hidden center">
+        <p class="center">It's eerily quiet in here. Sell your first ticket then come back and watch the magic happen</p>
       </div>
   </paper-material>
 </template>
