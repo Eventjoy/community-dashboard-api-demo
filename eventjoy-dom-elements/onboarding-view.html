@@ -47,8 +47,12 @@ paper-material{
   min-width:30%;
 }
 
-#starting.hidden, #authenticate.hidden, #onboarding.hidden, #loading.hidden {
+#starting.hidden, #authenticate.hidden, #onboarding.hidden, #noevents.hidden, #loading.hidden {
   display:none;
+}
+
+paper-progress {
+   --paper-progress-active-color: #FF4081;
 }
 
 .color-button {
@@ -109,6 +113,15 @@ paper-material{
         </div>
         <div class="onboarding-confirm">
           <paper-button class="center color-button" onClick="onEventSelected()" raised>MAKE IT HAPPEN CAPTAIN</paper-button>
+        </div>
+      </div>
+
+      <div id="noevents" class="hidden">
+        <div class="onboarding-text">
+          <p><b>So this is a little awkward, but we can't set things up because you haven't created any events</b></p>
+        </div>
+        <div class="onboarding-confirm">
+          <paper-button class="center color-button" onClick="location.href='https://www.eventjoy.com/manage/eventinfo?new';return false;" raised>CREATE AN EVENT</paper-button>
         </div>
       </div>
 

@@ -151,23 +151,27 @@
             eventjoy.events("", {"page[size]" : -1}, function(success, events) {
               $('onboarding-view #starting').addClass('hidden');
               $('onboarding-view #authenticate').addClass('hidden');
-              $('onboarding-view #onboarding').removeClass('hidden');
+              $('onboarding-view #onboarding').addClass('hidden');
+              $('onboarding-view #noevents').addClass('hidden');
 
-              if ( success && events ) {
-                if ( events.data.length && events.data[0].ID ) {
-                  // Create event of array and pass it to dropdown
-                  var eventArrays = [];
-                  events.data.forEach(function(order) {
-                    eventArrays.push({"eventName": order.name, "eventId" : order.ID});
-                  });
+              if ( success && events && events.data.length && events.data[0].ID ) {
+                $('onboarding-view #onboarding').removeClass('hidden');
+                // Create event of array and pass it to dropdown
+                var eventArrays = [];
+                events.data.forEach(function(order) {
+                  eventArrays.push({"eventName": order.name, "eventId" : order.ID});
+                });
 
-                  $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
-                  $('settings-view').attr("event-array-settings", JSON.stringify(eventArrays));
-                }
+                $('onboarding-view').attr("event-array", JSON.stringify(eventArrays));
+                $('settings-view').attr("event-array-settings", JSON.stringify(eventArrays));
+              } else {
+                $('onboarding-view #noevents').removeClass('hidden');
               }
             });
           } else {
             $('onboarding-view #starting').addClass('hidden');
+            $('onboarding-view #onboarding').addClass('hidden');
+            $('onboarding-view #noevents').addClass('hidden');
             $('onboarding-view #authenticate').removeClass('hidden');
             /*console.log('triggering login');
             */
@@ -185,6 +189,7 @@
         $('onboarding-view #starting').removeClass('hidden');
         $('onboarding-view #authenticate').addClass('hidden');
         $('onboarding-view #onboarding').addClass('hidden');
+        $('onboarding-view #noevents').addClass('hidden');
 
         // Check to see if we should authorize or not
         setTimeout( function() {
