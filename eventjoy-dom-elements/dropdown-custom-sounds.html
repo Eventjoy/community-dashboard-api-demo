@@ -90,27 +90,27 @@
           }
         },
         onSoundSelected: function(){
-          console.log("Sound selected "+ this.currentSound);
-          console.log("An array of sounds length "+ this.anArraySounds.length);
+          //console.log("Sound selected "+ this.currentSound);
+          //console.log("An array of sounds length "+ this.anArraySounds.length);
           // iterate over the list to find a matching ID and set all values for the view
             for(var i = 0; i < this.anArraySounds.length; i++){
               var soundItem = this.anArraySounds[i];
 
-              console.log(soundItem.theme_value + " : "+ this.currentSound);
+              //console.log(soundItem.theme_value + " : "+ this.currentSound);
   
               if(this.currentSound == soundItem.theme_value){
                 this.displayTextSounds = soundItem.theme_name;
                 this.displayValueSounds = soundItem.theme_value;
 
-                console.log("Sound found in dropdown :) ");
+                //console.log("Sound found in dropdown :) ");
               }else{
-                console.log("Sound not found!! :( ");
+                //console.log("Sound not found!! :( ");
               }
             }
         },
         handleEvent : function(e){
           // this.displayText = data;
-          console.log(e);
+          //console.log(e);
           this.displayValueSounds = e.target.parentNode.children[1].innerText;
           this.displayTextSounds = e.target.text;
 

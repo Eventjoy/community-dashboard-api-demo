@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<title>Community Wall</title>
+  	<title>Community Walls | Eventjoy</title>
 
     <!-- Opengraph -->
     <meta property="og:title" content="Community Walls by Eventjoy" />
@@ -208,6 +208,13 @@
 
       function startLogin() {
         eventjoy.login(function() {
+          // Reset all pages
+          $('onboarding-view #loading').addClass('hiding').removeClass('active');
+          $('onboarding-view #starting').removeClass('hidden');
+          $('onboarding-view #authenticate').addClass('hidden');
+          $('onboarding-view #onboarding').addClass('hidden');
+          $('onboarding-view #noevents').addClass('hidden');
+
           processAuth();
           console.log('login closed');
         });
@@ -304,6 +311,7 @@
 					};
 					attendees.push(attendeeDetail);
 				}
+        console.log('Added primary card');
 				// console.log(attendees);
 				$("main-card.incoming").attr("attendeenames", JSON.stringify(attendees));
 				//$("main-card.incoming").attr("registrationcount", order.num_of_attendees);
@@ -321,9 +329,9 @@
 				var element = $(".secondary-card-"+idx);
         if ( !element.length ) {
           element = $("<secondary-card class='secondary-card-"+idx+"' registrationcount='' ordertotal='' attendeenames='' discountcode='' promoter=''></secondary-card>");
-        } else { element.detach(); }
-        $("#secondary-card-wrapper").append(element);
-				// console.log(element);
+          $("#secondary-card-wrapper").append(element);
+        }
+				console.log('Added card secondary-card-'+idx);
 				// console.log(order);
 				var attendees = "";
 				for(x in attendeeData.data) {
@@ -355,11 +363,22 @@
         eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
           window.store.getOrders("prev", 5, localStorage.getItem("last_completed"), function( status, orders ) {
             if(orders && orders.length > 0) {
+              var addedCount = 0;
               for(var i in orders) {
                 addOrderCards(i, event_id, ticketData, orders[i], function() {
                   // The first time cards are added, ensure the content is shown
-                  console.log('Showing content...');
-                  showContent();
+                  if ( addedCount++ == (orders.length-1) ) {
+                    // Ensure cards are ordered correctly
+                    for ( var j = 0; j < 5; j++ ) {
+                      var element = $(".secondary-card-"+j);
+                      element.detach();
+                      $("#secondary-card-wrapper").append(element);
+                    }
+
+                    // Hide load screen
+                    console.log('Showing content...');
+                    showContent();
+                  }
                 });
               }
 
@@ -536,7 +555,9 @@
           getEventOrders(eventID, 1, 5, false, function() {
             //getEventOrders(eventID, 1, 50, true, null);
 
-            poll_data_into_database(eventID, false);
+            setTimeout( function() {
+              poll_data_into_database(eventID, false);
+            }, 1000);
           }, null);
         });
 
