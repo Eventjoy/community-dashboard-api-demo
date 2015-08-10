@@ -360,6 +360,8 @@
       }
 
       function reloadPageWithNewOrder(event_id, done) {
+        var handledCompletion = false;
+        console.log('reloadPageWithNewOrder('+event_id+')');
         eventjoy.events_tickets(event_id, {}, function(status, ticketData) {
           window.store.getOrders("prev", 5, localStorage.getItem("last_completed"), function( status, orders ) {
             if(orders && orders.length > 0) {
@@ -376,19 +378,22 @@
                     }
 
                     // Hide load screen
-                    console.log('Showing content...');
+                    console.log('Showing content ('+addedCount+')...');
                     showContent();
+                    if ( done ) done();
                   }
                 });
               }
 
             } else {
-              // If no cards are added, show content so we can display empty state
-              console.log('Showing content...');
-              showContent();
+              if ( status && !orders ) {
+                // If no cards are added, show content so we can display empty state
+                console.log('Showing content...');
+                showContent();
+                if ( done ) done();
+                handledCompletion = true;
+              }
             }
-
-            if ( done ) done();
           });
         });
       }
@@ -457,13 +462,13 @@
 
               // Complete animation
               /*showRipple();*/
-              setTimeout( function() {
+              //setTimeout( function() {
                 $('.move-right').removeClass('move-right');
                 $('#main-card-wrapper .transition').show().removeClass('move-off').addClass('move-in');
 
                 // Fade away ripple, then reset
                 /*hideRipple();*/
-              }, 250);
+              //}, 250);
             });
           }, 800);
         });
@@ -502,9 +507,12 @@
                   console.log("Got new data :)");
                   // Animate the new data in
                   if ( animate ) {
-                    newDataTransition( function(done) {
+                    console.log('Starting newDataTransition...');
+                    newDataTransition( function(transitionDone) {
+                      console.log('Swapping data (reloadPageWithNewOrder)...');
                       reloadPageWithNewOrder(eventID, function() {
-                        if ( done ) done();
+                        console.log('Calling transitionDone...');
+                        if ( transitionDone ) transitionDone();
                       });
                     });
                   } else {
