@@ -449,16 +449,17 @@
           // Wait for shuffle to complete, then apply new data
           /*$('.ripple-background').removeClass('activate').removeClass('deactivate');*/
           setTimeout( function() {
+
+            // Trigger audio notification here...
+            var themeName = localStorage.getItem("theme_name");
+            var numOfMusic = localStorage.getItem("num_of_theme_music");
+            if(!themeName) themeName = "jurassic_park"; 
+            if(!numOfMusic) numOfMusic = 12; 
+
+            playRandomMusic(themeName, 1, numOfMusic);
+            
             // This is where we shuffle the actual DOM elements, and reset the animation
             changeData(function() {
-
-              // Trigger audio notification here...
-              var themeName = localStorage.getItem("theme_name");
-              var numOfMusic = localStorage.getItem("num_of_theme_music");
-              if(!themeName) themeName = "jurassic_park"; 
-              if(!numOfMusic) numOfMusic = 12; 
-
-              playRandomMusic(themeName, 1, numOfMusic);
 
               // Complete animation
               /*showRipple();*/
